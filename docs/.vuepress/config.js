@@ -4,11 +4,11 @@ module.exports = {
   description: '前端学习日记',
   themeConfig:{
     nav: [{text: "主页", link: "/"      },
-        { text: "node", link: "/node/" },
-        { text: "前端", link: "/webframe/"},
-        { text: "数据库", link: "/database/"   },
-        { text: "android", link: "/android/"   },
-        { text: "面试问题", link: "/interview/" }
+        { text: "JavaScript", link: "/JavaScript/" },
+        { text: "HTML", link: "/html/"},
+        { text: "CSS", link: "/CSS/"   },
+        { text: "Vue", link: "/Vue/"   },
+        { text: "工程化", link: "/interview/" }
       ],
   },
   themeConfig:{
