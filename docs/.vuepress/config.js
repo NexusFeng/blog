@@ -1,7 +1,7 @@
 module.exports = {
   base: '/blog/',
   title: 'NexusFeng的博客',
-  description: '前端学习日记',
+  description: '前端学习笔记',
   themeConfig:{
     nav: [{text: "主页", link: "/"      },
         { text: "JavaScript", link: "/JavaScript/" },
