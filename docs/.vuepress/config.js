@@ -7,6 +7,7 @@ module.exports = {
         { text: "JavaScript", link: "/JavaScript/" },
         { text: "HTML", link: "/html/"},
         { text: "CSS", link: "/CSS/"   },
+        { text: "每日一题", link: "/EveryDayKnowledge/" },
         { text: "Vue", link: "/Vue/"   },
         { text: "工程化", link: "/interview/" }
       ],
