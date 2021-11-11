@@ -26,7 +26,7 @@ console.log(a.aa)
 obj: 要设置原型的对象
 prototype: 该对象的新原型
 ## 2、`Object.create()`和`new Object()`区别？
-使用new Object()创建空对象时,是有隐式原型属性的,即_proto_,使用Object.create(null)创建空对象时,是没有原型属性的
+使用new Object()创建空对象时,是有隐式原型属性的,即_proto_,使用Object.create(null)创建空对象时,是没有原型属性的,在用此方法创建空对象时不用担心会修改原型上的方法,比如toString等
 ## 3、创建数组,fill和from区别？
 ```js
 let arr = Array.from({length: 3},()=> {
