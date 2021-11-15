@@ -1,5 +1,6 @@
 # 每天一个小知识点
 ## 第三天
+---
 ## 1、`Object.create()`和`Object.setPrototypeOf()`的区别？
 Object.create()创建对象,Object.setPrototypeOf()修改原型  
 两者都能达到设置对象原型的功能，再具体表现上有区别  

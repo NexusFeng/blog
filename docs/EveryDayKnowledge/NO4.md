@@ -1,5 +1,6 @@
 # 每天一个小知识点
 ## 第四天
+---
 ## 1、`object`和`Object`的区别？
 js没有object,Object是基于构造函数,js对象都是基于Object
 ## 2、为什么字符串一个基本类型,会拥有比如subString、slice等方法？

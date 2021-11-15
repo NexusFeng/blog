@@ -1,5 +1,6 @@
 # 每天一个小知识点
 ## 第一天
+---
 ## js的数据类型有哪几种,分别是什么？  
 js数据类型有两大类：引用类型和基本数据类型(原始数据类型)。  
 **基本数据类型**：Number、String、Null、Boolean、Undefined、Symbol(ES6)、BigInt  
