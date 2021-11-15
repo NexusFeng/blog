@@ -9,7 +9,7 @@ module.exports = {
         { text: "CSS", link: "/CSS/"   },
         { text: "每日一题", link: "/EveryDayKnowledge/" },
         { text: "Vue", link: "/Vue/"   },
-        { text: "工程化", link: "/interview/" }
+        { text: "工程化", link: "/FrontEndEngineering/" }
       ],
   },
   themeConfig:{
