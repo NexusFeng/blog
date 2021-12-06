@@ -90,4 +90,4 @@ Promise.any([
   console.log(error);
 });
 ```
-与`Promise.race()`区别: Promise.any()不会因为某一个Promise变为erjected状态而结束,必须等所有参数Promise都为rejected才会结束
+与`Promise.race()`区别: Promise.any()不会因为某一个Promise变为rejected状态而结束,必须等所有参数Promise都为rejected才会结束

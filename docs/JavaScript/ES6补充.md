@@ -76,3 +76,108 @@ const map = new Map().set('foo', true).set('bar', false);
 Object.fromEntries(map)
 // { foo: true, bar: false }
 ```
+
+#### Symbol
+- **Symbol函数前不能使用new命令,否则会报错,这是因为生成的Symbol是一个原始类型的值,不是对象,不能添加属性。属于类似字符串的数据类型**
+- symbol值不能与其他类型的值进行运算
+- symbol值作为对象属性名时,不能用点运算符
+```js
+const mySymbol = Symbol()
+const a = {}
+a.mySymbol = 'hello'
+a[mySymbol] // undefined
+a['mySymbol'] // hello
+```
+- 在对象内部,使用Symbol定义属性时,Symbol必须放在`[]`内
+```js
+let s = Symbol()
+let obj = {
+  [s]: function(arg){}
+}
+obj[s](123)
+```
+- Symbol.for()重新使用同一个Symbol值(全局登记特性),会在全局搜索有无key值,有则返回
+```js
+let s1 = Symbol.for('foo')
+let s2 = Symbol.for('foo')
+s1 === s2 // true
+
+let s3 = Symbol('foo')
+let s4 = Symbol('foo')
+s3 === s4 // false
+```
+
+#### Set和Map
+**Set**
+- 类似于数组,成员的值是唯一的,没有重复的值
+```js
+// 数组去重
+[...new Set(array)]
+// 字符串去重
+[...new Set('aabbcc')].join('') // abc
+```
+- 添加值的时候,不会发生类型装换,'5'和5是两个不同的值,两个对象总是不相等的
+##### Set实例具有的方法和属性:
+- `Set.prototype.constructor`：构造函数,默认是Set函数
+- `Set.prototype.size`: 返回Set实例的成员总数
+- `Set.prototype.add(value)`添加某个值,返回Set结构本身
+- `Set.prototype.delete(value)`删除某个值,返回布尔值,代表是否删除成功
+- `Set.prototype.has(value)`返回一个布尔值,表示该值是否是Set的成员
+- `Set.prototype.clear()`清除所有成员,没有返回值
+##### Set实例遍历操作:
+- `Set.prototype.keys()`返回键名的遍历器(没有键名,和`values`方法行为一致)
+- `Set.prototype.values()`返回键值的遍历器
+- `Set.prototype.entries()`返回键值对的遍历器
+```js
+let set = new Set(['a', 'b', 'c'])
+for(let item of set.entries()) {
+  console.log(item)
+}
+// ['a', 'a']
+// ['b', 'b']
+// ['c', 'c']
+```
+- `Set.prototype.forEach()`使用回调函数遍历每个成员
+改变原来的Set结构
+```js
+// 方法一
+let set = new Set([1, 2, 3])
+set = new Set([...set].map(val => val*2))
+// set值 2,4,6
+
+// 方法二
+let set = new Set([1, 2, 3])
+set = new Set(Array.from(set, val => val*2))
+// set值 2,4,6
+```
+##### WeakSet(不重复值的集合)
+与Set的区别
+- WeakSet的成员只能是对象,而不是其他类型的值
+- WeakSet中的对象都是弱引用类型(适合临时存放一组对象,只要这些对象在外部消失,它在WeakSet里的引用就会自动消失)
+- WeakSet不可遍历
+- 没有`clear()`方法,没有size属性
+
+**Map**
+键值对的集合,键的范围不限于字符串,各类型的值都可以
+##### 实例具有的方法和属性:
+- `Map.prototype.size`: 返回Map结构的成员总数
+- `Map.prototype.set(key, value)`: 设置键值,返回整个Map结构(可用链式写法)
+- `Map.prototype.get(key)`: 获取键对应的值,如果没有返回undefined
+- `Map.prototype.has(key)`: 判断某键是否在当前Map对象中,返回布尔值
+- `Map.prototype.delete(key)`删除某个键,返回布尔值,代表是否删除成功
+- `Map.prototype.clear()`清除所有成员,没有返回值
+##### 遍历操作
+- `Set.prototype.keys()`返回键名的遍历器
+- `Set.prototype.values()`返回键值的遍历器
+- `Set.prototype.entries()`返回所有成员的遍历器
+- `Set.prototype.forEach()`使用回调函数遍历每个成员
+转为数组
+- 使用扩展运算符
+##### WeakMap
+与Map的区别
+- WeakMap只接受对象作为键名(null除外)
+- 弱引用类型,键名所指的对象,不计入垃圾回收机制
+- **弱引用只是键名,而不是键值,键值依然可以引用**
+- 不可遍历,没有遍历方法
+- 没有size属性和clear方法
+**使用场景:当js对dom操作时,如果存在对DOM的引用,在删除dom后得手动清除引用,此时可以用WeakMap**
