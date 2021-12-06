@@ -181,3 +181,58 @@ set = new Set(Array.from(set, val => val*2))
 - 不可遍历,没有遍历方法
 - 没有size属性和clear方法
 **使用场景:当js对dom操作时,如果存在对DOM的引用,在删除dom后得手动清除引用,此时可以用WeakMap**
+
+##### Proxy
+用于修改某些操作的默认行为,在访问目标对象之前必须通过拦截  
+语法：`var proxy = new Proxy(target, handler)`
+- Proxy实例也可以作为其他对象的原型对象
+```js
+var proxy = new Proxy({}, {
+  // target目标对象  proKey所要访问的属性
+  get: function(target, propKey) {
+    return 35
+  }
+})
+let obj = Object.create(proxy)
+obj.time // 35
+```
+Proxy支持的拦截操作
+- `get(target, proKey, receiver)`: 拦截对象属性的读取(参数：目标对象、属性名、proxy实例本身(可选))
+- `set(target, proKey,vaule, reveiver)`: 拦截对象属性的设置,返回一个布尔值(参数：目标对象、属性名、属性值、proxy实例本身(可选))
+- `has(target, proKey)`: 拦截`proKey in proxy`的操作,返回一个布尔值
+- `deletePropety(target, proKey)`: 拦截`delete proxy[proKey]`操作,返回一个布尔值
+- `ownKeys(target)`: 拦截`Object.getOwnPropertyNames(proxy)、Object.getOwnPropertySymbols(proxy)、Object.keys(proxy)、for...in`循环，返回一个数组。该方法返回**目标对象所有自身的属性的属性名，而Object.keys()的返回结果仅包括目标对象自身的可遍历属性**。 
+- `getOwnPropertyDescriptor(target, propKey)`：拦截`Object.getOwnPropertyDescriptor(proxy, propKey)`，返回属性的描述对象。
+- `defineProperty(target, propKey, propDesc)`：拦截`Object.defineProperty(proxy, propKey, propDesc）、Object.defineProperties(proxy, propDescs)`，返回一个布尔值。
+- `preventExtensions(target)`：拦截`Object.preventExtensions(proxy)`，返回一个布尔值。
+- `getPrototypeOf(target)`：拦截`Object.getPrototypeOf(proxy)`，返回一个对象。
+- `isExtensible(target)`：拦截`Object.isExtensible(proxy)`，返回一个布尔值。
+- `setPrototypeOf(target, proto)`：拦截`Object.setPrototypeOf(proxy, proto)`，返回一个布尔值。如果目标对象是函数，那么还有两种额外操作可以拦截。
+- `apply(target, object, args)`：拦截 Proxy 实例作为函数调用的操作，比如`proxy(...args)、proxy.call(object, ...args)、proxy.apply(...)`。(参数: 目标对象、目标对象的上下文对象、目标对象的参数数组)
+- `construct(target, args, newTarget)`：拦截 Proxy 实例作为构造函数调用的操作，比如`new proxy(...args)`(参数: 目标对象、构造函数的参数数组、创造实例对象时,new命令作用的构造函数)
+
+##### Reflect
+设计目的
+- 将Object对象的一些明显属于语言内部的方法放在Reflect对象上
+- 修改某些Object方法的返回结果,让其变得合理
+- 让Object操作都变成函数行为
+- Reflect对象的方法与Proxy对象的方法一一对应(13种)
+```js
+// Reflect 是一个内置的对象，它提供拦截 JavaScript 操作的方法
+// Reflect 将对象的操作集中起来，可以通过 Reflect. 的方式来使用
+// 01. Reflect.ownKeys 可以获取到对象普通属性和Symbol类型的属性
+let obj = {
+  a: 1,
+  [Symbol('b')]: 2
+}
+Reflect.ownKeys(obj).forEach(key => {
+  console.log(key, obj[key])
+})// a 1 Symbol('b') 2
+// 02. Reflect.has 判断一个对象是否存在某个属性，和 in 运算符 的功能完全相同(for in 会遍历原型链)
+Object.prototype.x = 'x'
+for (let key in obj) {
+  console.log(key)
+}
+console.log('a' in obj, 'x' in obj)
+console.log(Reflect.has(obj, 'a'), Reflect.has(obj, 'x'))
+```
