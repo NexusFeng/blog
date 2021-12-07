@@ -236,3 +236,65 @@ for (let key in obj) {
 console.log('a' in obj, 'x' in obj)
 console.log(Reflect.has(obj, 'a'), Reflect.has(obj, 'x'))
 ```
+##### Iterator(遍历器)
+为各种不同的数据结构提供统一的访问机制,任何数据结构只要部署Iterator接口,就可以完成便利操作.  
+主要作用：
+- 为各种数据结构提供一个统一的、简便的访问接口
+- 使得数据结构的成员能够按某种次序排序
+- 只要供`for...of`消费
+
+默认的Iterator接口部署在数据结构的Symbol.iterator(函数,预定义好的、类型为Symbol的特殊值)属性,即一个数据结构只要具有Symbol.iterator属性,就可以认为是可遍历的  
+原生具备Iterator接口的数据结构：
+- Array
+- Map
+- Set
+- String
+- TypedArray
+- 函数的arguments对象
+- NodeList对象
+```js
+let arr = ['a', 'b', 'c'];
+let iter = arr[Symbol.iterator]();
+
+iter.next() // { value: 'a', done: false }
+iter.next() // { value: 'b', done: false }
+iter.next() // { value: 'c', done: false }
+iter.next() // { value: undefined, done: true }
+```
+
+默认调用Iterator接口(即Symbol.iterator方法)的场合
+- 解构赋值
+- 扩展运算符
+- yield*
+```js
+// yield*后面跟的是一个可遍历的结构，它会调用该结构的遍历器接口。
+let generator = function* () {
+  yield 1;
+  yield* [2,3,4];
+  yield 5;
+};
+
+var iterator = generator();
+
+iterator.next() // { value: 1, done: false }
+iterator.next() // { value: 2, done: false }
+iterator.next() // { value: 3, done: false }
+iterator.next() // { value: 4, done: false }
+iterator.next() // { value: 5, done: false }
+iterator.next() // { value: undefined, done: true }
+```
+- for...of遍历
+  
+##### 类
+注意点
+- 类内部是严格模式
+- 不存在变量提升
+- name属性(返回class关键字后边的类名)
+```js
+class Point {}
+Point.name // Point
+```
+- 方法之前加*，表示为一个generator函数
+- this指向,类的方法内部含有this,它默认指向类的实例
+- 静态方法和非静态方法可以重名
+- 静态方法不能被实例调用,可以被子类继承调用
