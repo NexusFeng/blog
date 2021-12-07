@@ -290,6 +290,7 @@ iterator.next() // { value: undefined, done: true }
 - 类内部是严格模式
 - 不存在变量提升
 - name属性(返回class关键字后边的类名)
+- **类得到所有方法都定义在类的`perotortype`属性上,实例调用其实调用的是原型上的方法**
 ```js
 class Point {}
 Point.name // Point
@@ -298,3 +299,115 @@ Point.name // Point
 - this指向,类的方法内部含有this,它默认指向类的实例
 - 静态方法和非静态方法可以重名
 - 静态方法不能被实例调用,可以被子类继承调用
+- 静态属性是Class本身的属性,而不是定义在实例对象上的属性
+```js
+// 静态属性
+//老写法
+class Foo{
+}
+Foo.prop = 1
+//新写法
+class Foo {
+  static prop = 1
+}
+```
+- 私有方法(**也可以在在方法前面加#号**)和私有属性(**在属性前面加#号**)只能在类的内部访问,外部不能访问。也可加`static`变为静态的私有方法或属性
+```js
+//现有的解决方案
+//第一种 只是命名上加以区分,但实际上类的外部还是能调用
+class Widget {
+  // 公有方法
+  foo (baz){
+    this._bar(baz)
+  }
+  // 私有方法
+  _bar(baz) {
+    return this.snaf = baz
+  }
+}
+// 第二种 将私有方法移出类,类的内部所有方法对外可见的
+class Widget {
+  foo(baz) {
+    bar.call(this, baz)
+  }
+}
+function bar(baz) {
+  return this.snaf = baz
+}
+// 第三种 Symbol,但是Reflect.ownKeys()依然可以拿到他们
+const bar = Symbol('bar')
+const snaf = Symbol('snaf')
+export default class myClass{
+  // 公有方法
+  foo(baz){
+    this[bar](baz)
+  }
+  // 私有方法
+  [baz](baz){
+    return this[snaf] = baz
+  }
+}
+--------
+const inst = myClass()
+Reflect.ownKeys(myclass.prototype)
+// ['constructor', 'foo', 'Symbol(bar)']
+```
+类的继承
+- extends实现继承
+- super表示父类的构造函数,用来新建父类的this对象,子类必须在constructor方法中调用super方法,否则新建实例会报错
+- 子类构造函数中,只有调用`super`之后才能使用this关键字
+- 父类的静态方法也会被子类继承
+- `Object.getPrototypeOf`判断是否存在继承关系
+  
+ES5和ES6继承机制对比:  
+- ES5先创造子类的实例对象this,然后将父类的方法添加到this上(Parent.apply(this))
+- ES6先将父类实例对象的方法和属性,添加到this上(必须先调用super方法),然后再用子类的构造函数修改this
+
+super关键字
+- 作为函数调用,子类的构造函数必须执行一次super函数(super内部的this指向的是子类的实例,相当于`Parent.prototype.constructor.call(this)`)
+- 作为函数,只能用在子类的构造函数中
+- 作为对象时,**在普通方法中,指向父类的原型对象,在静态方法中,指向父类**
+```js
+// 普通对象
+class A{
+  p(){
+    return 2
+  }
+}
+class B extends A {
+  constructor(){
+    super()
+    console.log(super.p()) //2 普通方法中,super.p()相当于A.prototype.p()
+  }
+}
+// super指向父类的原型,定义在父类实例上的属性或方法是无法调用的
+
+// 静态对象
+class Parent {
+  static myMethod(msg) {
+    console.log('static', msg);
+  }
+
+  myMethod(msg) {
+    console.log('instance', msg);
+  }
+}
+
+class Child extends Parent {
+  static myMethod(msg) {
+    super.myMethod(msg);
+  }
+
+  myMethod(msg) {
+    super.myMethod(msg);
+  }
+}
+
+Child.myMethod(1); // static 1
+
+var child = new Child();
+child.myMethod(2); // instance 2
+// 指向父类
+```
+- 子类静态方法中通过`super`调用父类方法时,方法内部的this指向当前的子类
+- 使用`super`时,必须显示指定是作为对象还是函数使用,不能只写`console.log(super)//报错`
