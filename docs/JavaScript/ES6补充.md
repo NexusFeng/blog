@@ -410,4 +410,17 @@ child.myMethod(2); // instance 2
 // 指向父类
 ```
 - 子类静态方法中通过`super`调用父类方法时,方法内部的this指向当前的子类
-- 使用`super`时,必须显示指定是作为对象还是函数使用,不能只写`console.log(super)//报错`
+- 使用`super`时,必须显式指定是作为对象还是函数使用,不能只写`console.log(super)//报错`
+
+类的原型链
+- 类同时有prototype属性和__proto__属性
+- **子类的__proto__属性,表示构造函数的继承,总是指向父类**
+- **子类prototype属性的__proto__属性,表示方法的继承,总是指向父类的prototype属性**
+```js
+class A {
+}
+class B extends A {
+}
+B.__proto__ === A // true
+B.prototype.__proto__ === A.prototype // true
+```
