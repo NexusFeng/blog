@@ -359,9 +359,11 @@ Reflect.ownKeys(myclass.prototype)
 - 父类的静态方法也会被子类继承
 - `Object.getPrototypeOf`判断是否存在继承关系
   
-ES5和ES6继承机制对比:  
+**ES5和ES6继承机制对比:**  
 - ES5先创造子类的实例对象this,然后将父类的方法添加到this上(Parent.apply(this))
 - ES6先将父类实例对象的方法和属性,添加到this上(必须先调用super方法),然后再用子类的构造函数修改this
+- 基于以上两条,ES5无法继承原生的构造函数(`Boolean()、Number()、Array()等`),es6可以(`extends`关键字)
+- **注意:ES6改变了Object构造函数的行为,一旦发现不是通过`new Object()`这种形式调用,Object构造函数会忽略参数,无法通过super向父类Object传参**
 
 super关键字
 - 作为函数调用,子类的构造函数必须执行一次super函数(super内部的this指向的是子类的实例,相当于`Parent.prototype.constructor.call(this)`)
@@ -421,6 +423,11 @@ class A {
 }
 class B extends A {
 }
+// Object.setPrototypeOf(B, A)
 B.__proto__ === A // true
+// B.prototype = Object.create(A.prototype)
 B.prototype.__proto__ === A.prototype // true
+// 作为一个对象,子类B的原型(__proto__)是父类A
+// 作为一个构造函数, 子类B的原型对象(prototype属性)是父类的原型对象(prototype属性)的实例
 ```
+- 子类的原型的原型是父类的原型(`B.__proto__.__proto__ === A.__proto__`)
