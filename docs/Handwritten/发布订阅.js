@@ -1,3 +1,4 @@
+// 相关文章: https://juejin.cn/post/6844903603107266567
 // 简易版
 class EventEmitter {
   constructor() {
@@ -49,5 +50,5 @@ events.once('dbClick', () => {
   console.log(123456)
 })
 
-events.emit('dbClick')
+events.emit('dbClick', '444')
 events.emit('dbClick')
