@@ -283,7 +283,39 @@ iterator.next() // { value: 4, done: false }
 iterator.next() // { value: 5, done: false }
 iterator.next() // { value: undefined, done: true }
 ```
-- for...of遍历
+- for...of遍历(普通对象使用for...of会报错)
+```js
+// 普通对象使用for...of遍历,就给对象添加一个[Symbol.iterator]属性,并指向一个迭代器
+//方式一
+let obj = {a: 1, b: 2, c: 3}
+obj[Symbol.iterator] = function* () {
+  let keys = Object.keys(obj)
+  for(let k of keys) {
+    yield [k, obj[k]]
+  }
+}
+for (let [k, v] of obj) {
+  console.log(k,v)
+}
+// 方式二
+let obj = {a: 1, b: 2, c: 3}
+obj[Symbol.iterator] = function () {
+  let keys = Object.keys(this)
+  let count = 0
+  return {
+    next() {
+      if (count < keys.length){
+        return { value: obj[keys[count++]], done: false }
+      } else {
+        return { value: undefined, done: true }
+      }
+    }
+  }
+}
+for (let k of obj) {
+  console.log(k)
+}
+```
   
 ##### 类
 注意点
