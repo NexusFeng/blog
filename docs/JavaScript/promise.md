@@ -37,6 +37,7 @@ sayhello("first", function () {
 Promise成功之后仅调用一次resolve()，不会产生回调多次执行的问题。除非Promise再次调用。所以Promise很好地解决了第三方工具导致的回调多次执行（控制反转）的问题。
 
 ### 注意的问题
+- **并行promise的then会交替执行**
 - Promise实例具有then方法,也就是说,then方法时定义在原型对象Promise.prototype上的,then方法返回的是一个新的Promise实例(不是原来的那个Promise示例)
 - 如果Promise状态已变成resolved,再抛出错误是无效的
 ```js
