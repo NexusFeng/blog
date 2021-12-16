@@ -56,6 +56,7 @@ promise
 注意:finally方法的回调函数不接受任何参数，这意味着没有办法知道，前面的 Promise 状态到底是fulfilled还是rejected。这表明，finally方法里面的操作，应该是与状态无关的，不依赖于 Promise 的执行结果。
 #### Promise.all()
 Promise.all()方法用于将多个 Promise 实例，包装成一个新的 Promise 实例。
+- **数组内执行的顺序并不是有序的,除非可迭代对象为空**
 ```js
 const p = Promise.all([p1, p2, p3]);
 // 只有p1,p2,p3的状态变为fulfilled时,p的状态才会变为fulfilled,p的回调函数会得到p1,p2,p3返回值组成的数组。只要有一个状态为rejected,p的状态就变为rejected,p的回调函数会得到为第一个rejected的返回值
