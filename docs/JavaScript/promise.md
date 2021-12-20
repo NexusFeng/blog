@@ -52,8 +52,31 @@ promise
 ```
 
 #### Promise.prototype.finally()(ES2018)
-无论Promise对象最后状态如何都会执行操作
-注意:finally方法的回调函数不接受任何参数，这意味着没有办法知道，前面的 Promise 状态到底是fulfilled还是rejected。这表明，finally方法里面的操作，应该是与状态无关的，不依赖于 Promise 的执行结果。
+无论Promise对象最后状态如何都会执行操作  
+finally本质上是**then方法的特例**  
+**注意**:finally方法的回调函数不接受任何参数,这意味着没有办法知道,前面的 Promise 状态到底是fulfilled还是rejected。这表明,finally方法里面的操作,应该是与状态无关的,不依赖于 Promise 的执行结果。  
+例:
+```js
+Promise.resolve('1')
+  .then(res => {
+    console.log(res)
+  })
+  .finally(() => {
+    console.log('finally')
+  })
+Promise.resolve('2')
+  .finally(() => {
+    console.log('finally2')
+    return '我是finally2返回的值'
+  })
+  .then(res => {
+    console.log('finally2后面的then函数', res)
+  })
+// 1
+// finally2
+// finally
+// finally2后面的then函数 2
+```
 #### Promise.all()
 Promise.all()方法用于将多个 Promise 实例，包装成一个新的 Promise 实例。
 - **数组内执行的顺序并不是有序的,除非可迭代对象为空**
@@ -67,6 +90,30 @@ Promise.race()方法同样是将多个 Promise 实例，包装成一个新的 Pr
 const p = Promise.race([p1, p2, p3]);
 // 只要p1,p2,p3中有一个实例率先改变状态,p的状态就会随之改变,实例的返回值会传给p的回调函数
 ```
+例: 
+```js
+function runAsync(x) {
+  const p = new Promise(r =>
+    setTimeout(() => r(x, console.log(x)), 1000)
+  );
+  return p;
+}
+function runReject(x) {
+  const p = new Promise((res, rej) =>
+    setTimeout(() => rej(`Error: ${x}`, console.log(x)), 1000 * x)
+  );
+  return p;
+}
+Promise.race([runReject(0), runAsync(1), runAsync(2), runAsync(3)])
+  .then(res => console.log("result: ", res))
+  .catch(err => console.log(err));
+// 0
+// Error: 0
+// 1
+// 2
+// 3
+```
+**`all`和`race`传入的数组中如果有会抛出异常的异步任务，那么只有最先抛出的错误会被捕获，并且是被then的第二个参数或者后面的catch捕获；但并不会影响数组中其它的异步任务的执行。**
 #### Promise.allSettled()(ES2020)
 Promise.all()可以确定所有请求都成功了，但是只要有一个请求失败，它就会报错，而不管另外的请求是否结束  
 Promise.allSettled()用来确定一组异步操作是否都结束了(不管成功或失败)
@@ -93,3 +140,22 @@ Promise.any([
 });
 ```
 与`Promise.race()`区别: Promise.any()不会因为某一个Promise变为rejected状态而结束,必须等所有参数Promise都为rejected才会结束
+
+案例分析:
+```js
+const promise = Promise.reolve().then(() => {
+  return promise
+})
+promise.catch(console.err)
+// Uncaught (in promise) TypeError: Chaining cycle detected for promise #<Promise>
+```
+**`.then``.catch`返回值不能是promise本身,否则会造成死循环**
+
+```js
+Promise.resolve(1)
+  .then(2)
+  .then(Promise.resolve(3))
+  .then(console.log)
+// 1
+```
+**`.then`或`.catch`的参数期望是函数,传入非函数则会发生值穿透**
