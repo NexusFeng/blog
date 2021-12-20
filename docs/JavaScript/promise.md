@@ -151,6 +151,8 @@ promise.catch(console.err)
 ```
 **`.then``.catch`返回值不能是promise本身,否则会造成死循环**
 
+
+
 ```js
 Promise.resolve(1)
   .then(2)
@@ -159,3 +161,24 @@ Promise.resolve(1)
 // 1
 ```
 **`.then`或`.catch`的参数期望是函数,传入非函数则会发生值穿透**
+
+
+```js
+Promise.resolve().then(() => {
+    console.log('1')
+    throw 'Error';
+}).then(() => {
+    console.log('2')
+}).catch(() => {
+    console.log('3')
+    throw 'Error';
+}).then(() => {
+    console.log('4')
+}).catch(() => {
+    console.log('5')
+}).then(() => {
+    console.log('6')
+})
+// 1 3 5 6
+```
+**无论是`.thne`还是`.catch`中,只要`throw` 抛出了错误，就会被`catch`捕获,如果没有`throw`出错误,就被继续执行后面的then。**
