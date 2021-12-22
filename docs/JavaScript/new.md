@@ -13,9 +13,9 @@ let objectFunction() {
     throw new TypeError('type error')
     return
   }
-  // 新建一个空对象,对象的原型为构造函数的prototype对象
+  // 新建一个空对象,对象的原型为构造函数的prototype对象,建立原型链关系
   newObject = Object.create(constructor.prototype)
-  // 将this指向新对象,并执行函数
+  // 将this指向新对象,并执行函数,为了让构造函数能够进行this.name = name 的操作
   result = constructor.apply(newObject, arguments)
   // 判断返回对象
   let flag = result && (typeof result === 'object' || typeof result === 'function')
