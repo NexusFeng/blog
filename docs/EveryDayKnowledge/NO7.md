@@ -12,8 +12,8 @@
 304 not modified 客户端有缓存  
 3、4XX相关(客户端错误)  
 400 bad request 请求有语法错误  
-401 unauthorized 没有请求权限  
-403 forbidden 对请求资源的访问被服务器拒绝  
+401 unauthorized 没有请求权限 (未登录) 
+403 forbidden 对请求资源的访问被服务器拒绝 (客户端没有权限) 
 404 not found 请求的资源在服务器未找到
 ## 2、https加密过程是怎么样的？  
 http + 加密 + 认证 + 完整性保护 = https  
