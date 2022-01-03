@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Demo</title>
+</head>
+<body>
+    <div>Demo</div>  
+</body>
+<script type="module">
+let tree = [
+  {
+    id: '1',
+    title: '节点1',
+    hasChildren: true,
+    children: [
+      {id: '11', hasChildren: false, title: '节点1-1'},
+      {id: '12', hasChildren: false, title: '节点1-2'}
+    ]
+  },{
+    id: '2',
+    title: '节点2',
+    children: [
+      {id: '21',title: '节点2-1'}
+    ]
+  }
+]
+
+// 广度优先
+// function BFS (tree) {
+//   let node, nodes = [], list = [...tree]
+//   while (node = list.shift()) {
+//     nodes.push(node.title)
+//     node.children && list.push(...node.children)
+//   }
+//   return nodes
+// }
+// console.log(BFS(tree), "BFS")
+
+// 深度优先-先序遍历(递归)
+// function DFSPreorder (tree) {
+//   let nodes = []
+//   const fn = tree => {
+//     tree.forEach(node => {
+//       nodes.push(node.title)
+//       node.children && fn(node.children) 
+//     })
+//   }
+//   fn(tree)
+//   return nodes
+// }
+// console.log(DFSPreorder(tree), "DFSPreorder")
+
+// 深度优先-后序遍历(递归)
+// function DFSPostscript (tree) {
+//   let nodes = []
+//   const fn = tree => {
+//     tree.forEach(node => {
+//       node.children && fn(node.children)
+//       nodes.push(node.title)
+//     })
+//   }
+//   fn(tree)
+//   return nodes
+// }
+// console.log(DFSPostscript(tree), "DFSPostscript")
+
+// 深度优先-先序遍历(循环)
+// function DFSPreorder (tree) {
+//   let node, nodes = [], list = [...tree]
+//   while (node = list.shift()) {
+//     nodes.push(node.title)
+//     node.children && list.unshift(...node.children)
+//   }
+//   return nodes
+// }
+// console.log(DFSPreorder(tree), "DFSPreorder")
+
+// 深度优先-后序遍历(循环)
+// function DFSPostscript (tree, func) {
+//   let node, nodes = [], list = [...tree], i =  0
+//   while (node = list[i]) {
+//     let childCount = node.children ? node.children.length : 0
+//     if (!childCount || node.children[childCount - 1] === list[i - 1]) {
+//       nodes.push(node.title)
+//       i++
+//     } else {
+//       list.splice(i, 0, ...node.children)
+//     }
+//   }
+//   return nodes
+// }
+// console.log(DFSPostscript(tree), "DFSPostscript")
+
+
+// 多树遍历路径
+function Multipath (tree) {
+  let paths = []
+  tree.map(list => {
+    const fn = (list,path = '') => {
+      if (list.hasChildren) {
+        path += list.title
+        list.children.map(item => {
+          if (item.hasChildren) {
+            path += '-'
+          }
+          fn(item, path)
+        })
+      } else {
+        paths.push(path)
+      }
+      }
+    fn(list)
+  })
+  return paths
+}
+console.log(Multipath(trees), 'Multipath')
+
+</script>
+</html>
