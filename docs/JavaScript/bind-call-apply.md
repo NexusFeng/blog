@@ -9,23 +9,6 @@
 - 两个特点: 1、返回一个函数  2、可以传入参数(多个)
 - **一个绑定函数也能使用new操作符创建对象:这种行为就像把原函数当成构造器。提供的`this`值被忽略,同时调用时的参数被提供给模拟函数(也就是说,当bind返回的函数作为构造函数的时候,bind时指定的this值会失效,但传入的参数依然生效)**   
 
-简易版-不支持new
-```js
-Function.prototype.myBind = function(context) {
-  // 判断调用对象是否为函数
-  if (typeof this !== 'function') {
-    throw new TypeError('Error')
-  }
-  // 获取参数
-  let args = [...arguments].slice(1), fn = this
-  return function Fn() {
-    // 根据调用方式,传入不同的绑定值
-    return fn.apply(
-      this instanceof Fn ? this : context, args.concat(...arguments)
-    )
-  }
-}
-```
 支持new
 ```js
 // Object.create原理(创建一个新对象,使现有的对象来提供新创建的对象__proto__)
@@ -60,13 +43,43 @@ let axiosPoint = new YPoint(2)
 console.log(axiosPoint instanceof Point) //true
 console.log(axiosPoint instanceof YPoint) //true
 ```
+第二版
+```js
+Function.prototype.myBind = fucntion (context, ...args){
+  if(!context || context === null) {
+    context = window
+  }
+  // 创建唯一key值,作为构造的context内部方法
+  let fn = Symbol()
+  context[fn] = this
+  let _this = this
+  const result = function(...innerArgs) {
+    // 第一种情况,若是将bind绑定之后作为构造函数,通过new操作符使用,此时传入的this失效,this指向实例化出来的对象
+    // 此时由于new操作符作用 this指向result实例对象,而result又继承自传入的_this,根据原型链知识可得
+    // this.__proto__ === result.prototype => this instanceof result ===true
+    // this.__proto__.__proto__ === result.prototype.__proto__ === _this.prototype => this instanceof _this === true
+    if (this instanceof _this === true) {
+      // 此时this指向result的实例 这时不需要改变this指向
+      this[fn] = _this
+      this[fn](...[...args, ...innerArgs])
+    } else {
+      // 如果作为普通函数调用,直接改变this指向为传入的context
+      context[fn](...[...args, ...innerArgs])
+    }
+  }
+  // 如果绑定的是构造函数 那麽需要继承构造函数原型属性和方法
+  // 实现继承的方法：Object.create()
+  result.prototype = Object.create(this.prototype)
+  return result
+}
+```
 ## call模拟实现
 - 调用call的对象,必须是函数
 - call的一个参数是对象,不传默认全局对象window
 - 从第二个参数开始,接受任意个参数,如果传数组,则会映射到第一个参数上
 - 使用场景：1、对象的继承,2、借用方法
 ```js
-Function.prototype.myApply = function(context) {
+Function.prototype.myCall= function(context) {
   // 判断对象是否是函数
   if (typeof this !== 'function') {
     throw new TypeError('error')
@@ -87,11 +100,24 @@ Function.prototype.myApply = function(context) {
   return result
 }
 ```
+第二版
+```js
+Function.prototype.myCall = function (context, ...args) {
+  if (!context || context === null) {
+    context = window
+  }
+  // 创建唯一key值 作为构造的context内部方法
+  let fn = Symbol()
+  context[fn] = this // this指向调用call的函数
+  // 执行函数并返回结果,相当于把自身作为传入的cotext的方法进行调用了
+  return context[fn](...args)
+}
+```
 ## apply模拟实现
 - 调用者必须是函数,只接受两个参数
 - 第二个参数,必须是数组或者类数组
 ```js
-Function.prototype.myCall = function(context) {
+Function.prototype.myApply = function(context) {
   // 判断调用对象
   if (typeof this !== 'function') {
     throw new TypeError('error')

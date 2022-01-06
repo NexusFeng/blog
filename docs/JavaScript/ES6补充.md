@@ -3,7 +3,7 @@
 ```js
 Number.EPSILON === Math.pow(2, -52)// true
 function withinErrorMargin (left, right) {
-  return Math.abs(left - right) < Number.EPSILON * Math.pow(2, 2);
+  return Math.abs(left - right) < Number.EPSILON
 }
 
 0.1 + 0.2 === 0.3 // false
@@ -241,7 +241,7 @@ console.log(Reflect.has(obj, 'a'), Reflect.has(obj, 'x'))
 主要作用：
 - 为各种数据结构提供一个统一的、简便的访问接口
 - 使得数据结构的成员能够按某种次序排序
-- 只要供`for...of`消费
+- 主要供`for...of`消费
 
 默认的Iterator接口部署在数据结构的Symbol.iterator(函数,预定义好的、类型为Symbol的特殊值)属性,即一个数据结构只要具有Symbol.iterator属性,就可以认为是可遍历的  
 原生具备Iterator接口的数据结构：
