@@ -22,6 +22,7 @@ Function.prototype.bind = function (context, ...otherArgs) {
   let fBound = function(...innerArgs) {
     return thatFun.apply(
       // 如果是new这个绑定函数后,则bind绑定的时候传context没有用
+      // 由于new操作符作用 this指向构造函数的实例对象
       this instanceof thatFun ? this : context, [...otherArgs,...innerArgs]
     )
   }
@@ -80,22 +81,19 @@ Function.prototype.myBind = fucntion (context, ...args){
 - 使用场景：1、对象的继承,2、借用方法
 ```js
 Function.prototype.myCall= function(context) {
-  // 判断对象是否是函数
+   // 判断调用对象
   if (typeof this !== 'function') {
     throw new TypeError('error')
   }
-  let result = null
-  // 判断context是否存在,如果未传入则为window
+  // 获取参数
+  let args = [...arguments].slice(1), result = null
+  // 判断context是否传入,如果未传入则设置为window
   context = context || window
-  // 将函数设为对象的方法
+  // 将调用函数设置为对象的方法
   context.fn = this
-  // 调用方法
-  if(arguments[1]) {
-    result = context.fn(...arguments[1])
-  } else {
-    result = context.fn()
-  }
-  //将属性删除
+  // 调用函数
+  result = context.fn(...args)
+  // 将属性删除
   delete context.fn
   return result
 }
@@ -118,19 +116,22 @@ Function.prototype.myCall = function (context, ...args) {
 - 第二个参数,必须是数组或者类数组
 ```js
 Function.prototype.myApply = function(context) {
-  // 判断调用对象
+   // 判断对象是否是函数
   if (typeof this !== 'function') {
     throw new TypeError('error')
   }
-  // 获取参数
-  let args = [...arguments].slice(1), result = null
-  // 判断context是否传入,如果未传入则设置为window
+  let result = null
+  // 判断context是否存在,如果未传入则为window
   context = context || window
-  // 将调用函数设置为对象的方法
+  // 将函数设为对象的方法
   context.fn = this
-  // 调用函数
-  result = context.fn(...args)
-  // 将属性删除
+  // 调用方法
+  if(arguments[1]) {
+    result = context.fn(...arguments[1])
+  } else {
+    result = context.fn()
+  }
+  //将属性删除
   delete context.fn
   return result
 }
