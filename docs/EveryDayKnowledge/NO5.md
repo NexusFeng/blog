@@ -23,4 +23,4 @@ fun1.call({id: 'Obj'})     // 'Global'
 fun1.apply({id: 'Obj'})    // 'Global'
 fun1.bind({id: 'Obj'})()   // 'Global'
 ```
-原因: 箭头函数也是函数,但是箭头函数没有prototype,由于是函数,所以能调用Function.prototype上面的方法不会报错。此外,任何函数的_proto_都是Function.prototype,并且Function._proto_和Function.prototype是相等的,函数是个特殊情况,其他的不会出现自己的隐式原型和自己的显式原型一样的情况。
+原因: 箭头函数也是函数,但是箭头函数没有prototype,由于是函数,所以能调用Function.prototype上面的方法不会报错。此外,任何函数的__proto__都是Function.prototype,并且Function.__proto__和Function.prototype是相等的,函数是个特殊情况,其他的不会出现自己的隐式原型和自己的显式原型一样的情况。
