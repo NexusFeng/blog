@@ -20,18 +20,23 @@ function evenRound(num, decimalPlaces) {
   }
 }
 /**
- * 注册文件
+ * 自动导入vuex modules
+ * webpack内置的
  */
-const modulesFiles = require.context('./modules', true, /.js$/)
+const files = require.context('.', true, /\.js$/)
 
-const modules = modulesFiles.keys().reduce((modules, modulePath) => {
- // 忽略第1个js
- const moduleName = modulePath.replace(/.\//, '').replace('.js', '')
- // 执行modulesFiles函数，返回一个对象{default: {// 文件内容}, _esModule: true}
- const value = modulesFiles(modulePath)
- modules[moduleName] = value.default
- return modules
-}, {})
+const modules = {}
 
-
+files.keys().forEach(key => {
+  const path = key.replace(/\.\/|\.js/g,'')
+  if (path == 'index') return
+  let [namespace, type] = path.split('/') // ['home', 'state']
+  if(!modules[namespace]) {
+    modules[namespace] = {
+      namespaced: true
+    }
+  }
+  // {home:{namespaced:true,state: {}}}
+  modules[namespace][type] = files(key).default// 获取文件导出结果
+})
 export default modules
