@@ -59,3 +59,52 @@ mixin中有很多缺陷'命名冲突问题'、'依赖问题'、'数据来源问�
 nextTick中的回调是在下次DOM更新循环结束之后执行的延迟回调\
 可用于获取更新后的DOM\
 Vue中数据更新是异步的,使用nextTick方法可以保证用户定义的逻辑在更新之后执行
+
+## computed和watch的区别
+(src/core/instance/state.js:58)\
+(src/core/instance/state.js:241)计算属性取值函数\
+(src/core/instance/state.js:345)watch的实现\
+computed和watch都是基于Watcher来实现的\
+computed属性是具备缓存的,依赖的值不发生变化,对其取值时计算属性方法不会重新计算\
+watch则是监控值变化,当值变化时掉哦用对应的回调函数
+
+## Vue.set方法是如何实现的
+可以看做defineReactive 和 splice方法的集合\
+(src/core/observer:45)给对象增加dep属性\
+(src/core/observer:201)set方法的定义
+给对象和数组本身都增加了dep属性\
+当给对象新增不存在的属性则会触发对象依赖的watcher去更新\
+当修改数组索引时我们调用数组本身的splice方法去更新数组
+
+## Vue为什么需要虚拟dom
+(src/core/vdom/create-element.js:28)\
+(src/core/vdom/vnode.js)虚拟dom的实现\
+虚拟dom就是用js对象来描述真实DOM，是对真实DOM的抽象\
+由于直接操作DOM性能低但是js层的操作效率高,可以将DOM操作转化成对象操作,最终通过diff算法比对差异进行更新DOM(减少了对真实DOM的操作)\
+虚拟DOM不依赖真实平台环境从而也可以实现跨平台
+
+## Vue中的diff算法原理
+(src/core/vdom/patch.js:700)\
+(src/core/vdom/patch.js:501)比较两个虚拟节点 patchVnode()\
+(src/core/vdom/patch.js:404)比较两个虚拟节点 patchChildren()\
+Vue的diff算法是平级比较,不考虑跨级比较的情况,内部采用**深度递归的方式+双指针**的方式进行比较\
+- 先比较是否相同节点 **以tag和key为主**
+- 相同节点比较属性,并复用老节点
+- 比较儿子节点,考虑老节点和新节点儿子的情况
+- 优化比较: 头头、尾尾、头尾、尾头
+- 比对查找进行复用
+
+## 既然Vue通过数据劫持可以精准探测到数据变化,为什么还需要虚拟dom进行diff检测差异
+- 响应式数据变化,Vue确实可以在数据发生变化时,响应式系统可以立刻得知。但是如果给每个属性都添加watcher用于更新的话,会产生大量的watcher从而降低性能
+- 而且颗粒度过细也会导致更新不精准的问题,所以Vue采用了组件级的watcher配合diff来检测差异
+
+## vue中key的作用和原理
+- Vue在patch过程中通过key可以判断两个虚拟节点是否是相同节点(可以复用老节点)
+- 无key会导致更新的时候出问题
+- 尽量不采用索引作为key
+
+## 对vue组件化的理解
+- 组件化开发能大幅度提高应用开发效率、测试性、复用性等
+- 常用的组件化技术：属性、自定义事件、插槽等
+- 降低更新范围，只是重新渲染变化的组件
+- 组件的特点：高内聚、低耦合、单项数据流
