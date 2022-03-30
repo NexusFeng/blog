@@ -122,3 +122,23 @@ Vue的diff算法是平级比较,不考虑跨级比较的情况,内部采用**深
 
 ## 函数式组件的优势及原理
 函数式组件的特性: 无状态、无声明周、无this。但是性能高，正常组件是一个类,继承了Vue,函数式组件就是一个普通的函数,没有new过程,也没有init、prepatch等钩子
+
+## vue组件间传值的方式以及之间的区别
+- `props`和`$emit`父组件向子组件传递数据通过prop传递的,子组件传递数据给父组件是通过`$emit`触发事件
+props原理(src\core\vdom\create-component.js:192)\
+(src\core\instance\init.js:36)
+- `$parent/$children`获取当前组件的父组件和当前组件的子组件
+- `$attrs/$listeners` A->B->C。vue2.4开始提供了`$attrs/$listeners`来解决这个问题
+- 父组件中通过`provide`来提供变量,然后在子组件中通过`inject`来注入变量
+- `$refs`获取实例
+（ref有两个值 1、放在组件上 获取组件的实例  2、放到元素上 会获取真实dom）
+- `eventBus`平级组件数据传递 这种情况下可以使用中央事件总线的方式
+- vuex状态管理
+
+## $attrs(2.4新增)是为了解决什么问题出现的,provide和inject不能解决他能解决的问题吗
+$attrs主要的作用就是实现批量传递数据。provide/inject更合适应用在插件中,主要是跨级数据传递
+
+## v-for和v-for那个优先级更高
+v-for和v-if不要在同一个标签中使用,因为解析时先解析v-for再解析v-if.如果遇到需要同时使用时可以考虑写成计算属性的方式\
+(src/compiler/index.js:19)\
+(src/compiler/codegen/index.js:56)解析v-if和v-for
