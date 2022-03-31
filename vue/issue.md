@@ -138,7 +138,23 @@ props原理(src\core\vdom\create-component.js:192)\
 ## $attrs(2.4新增)是为了解决什么问题出现的,provide和inject不能解决他能解决的问题吗
 $attrs主要的作用就是实现批量传递数据。provide/inject更合适应用在插件中,主要是跨级数据传递
 
-## v-for和v-for那个优先级更高
+## v-for和v-if那个优先级更高
 v-for和v-if不要在同一个标签中使用,因为解析时先解析v-for再解析v-if.如果遇到需要同时使用时可以考虑写成计算属性的方式\
 (src/compiler/index.js:19)\
 (src/compiler/codegen/index.js:56)解析v-if和v-for
+
+##  v-model,  v-model放在组件和元素上有啥区别
+- v-for实现原理(src/compiler/codegen/index.js:187)
+
+- v-model在组件上相当于 `value + @input`
+普通元素上的v-model指令(src/compiler/codegen/index.js:310)
+![v-model](/docs/images/vue/v-model.PNG)
+在普通元素上v-model会生成指令 + value和input，不通的类型生成的事件不同\
+组件上 生成model:{value, callback}
+
+## vue中slot是如何实现的？什么时候使用
+![v-model](/docs/images/vue/slot.PNG)
+普通插槽和作用域插槽的区别:\
+渲染位置不同
+- 普通插槽是父组件渲染完毕后替换子组件的内容
+- 作用域插槽是在子组件里边渲染插槽的内容
