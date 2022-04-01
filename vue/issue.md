@@ -158,3 +158,21 @@ v-for和v-if不要在同一个标签中使用,因为解析时先解析v-for再�
 渲染位置不同
 - 普通插槽是父组件渲染完毕后替换子组件的内容
 - 作用域插槽是在子组件里边渲染插槽的内容
+
+## Vue.use是干什么的?原理是什么
+(src/core/global-api/use.js)
+Vue.use是用来使用插件的，我们可以在插件中扩展全局组件、指令、原型方法等\
+会调用插件的install方法,将vue的构造函数默认传入,这样在插件中可以使用vue无需依赖vue库\
+
+## vue的事件修饰符有哪些?实现原理是什么
+.stop/.prevent/.capture/.self/.once/.passive\
+(src/compiler/helpers.js:69)
+.sync实现原理(src/compiler/parser/index.js:789)
+
+## 如何理解自定义指令
+- 1.在生成ast语法树时,遇到指令会给当前元素添加directive属性
+- 2.通过genDeirectives生成指令代码
+- 3.在patch前将指令的钩子提取到cbs中,在patch过程中调用对应的钩子
+- 4.当执行cbs对应的钩子时,调用对应指令定义的方法
+(src/vdom/patch.js:77)提取钩子函数\
+(src/vdom/modules/directives.js:7)指令钩子
