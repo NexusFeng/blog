@@ -135,8 +135,8 @@ props原理(src\core\vdom\create-component.js:192)\
 - `eventBus`平级组件数据传递 这种情况下可以使用中央事件总线的方式
 - vuex状态管理
 
-## $attrs(2.4新增)是为了解决什么问题出现的,provide和inject不能解决他能解决的问题吗
-$attrs主要的作用就是实现批量传递数据。provide/inject更合适应用在插件中,主要是跨级数据传递
+## $attrs(2.4新增)是为了解决什么问题出现的,provide和inject不能解决他能解决的问题吗 
+`$attrs`主要的作用就是实现批量传递数据。provide/inject更合适应用在插件中,主要是跨级数据传递
 
 ## v-for和v-if那个优先级更高
 v-for和v-if不要在同一个标签中使用,因为解析时先解析v-for再解析v-if.如果遇到需要同时使用时可以考虑写成计算属性的方式\
@@ -176,3 +176,61 @@ Vue.use是用来使用插件的，我们可以在插件中扩展全局组件、�
 - 4.当执行cbs对应的钩子时,调用对应指令定义的方法
 (src/vdom/patch.js:77)提取钩子函数\
 (src/vdom/modules/directives.js:7)指令钩子
+
+## keep-alive的实现原理
+keep-alive包裹动态组件时,会对组件进行缓存,避免组件的重新创建
+lru算法 最近最久未使用
+
+## vue-router有几种钩子函数,具体是什么以及执行流程是怎样的
+
+钩子函数的种类有: 全局守卫、路由守卫、组件守卫
+- 1.导航被触发
+- 2.在失活的组件里调用beforeRouteLeave守卫
+- 3.调用全局的beforeEach守卫
+- 4.在重用的组件里调用beforeRouteUpdate守卫(2.2+)
+- 5.在路由配置里调用beforeEnter
+- 6.解析异步路由组件
+- 7.在被激活的组件里调用beforeRouteEnter
+- 8.调用全局的beforeResolve守卫(2.5+)
+- 9.导航被确认
+- 10.调用全局的afterEach钩子
+- 11.触发DOM更新
+- 12.调用beforeRouteEnter守卫中传给next的回调函数,创建好的组件实例会作为回调函数的参数传入
+
+## vue-router的两种模式的区别
+- vue-router有三种模式hash、history、abstract
+- abstract模式是在不支持浏览器PAI环境使用,不依赖浏览器历史
+- hash模式: hash + popState/hashChange兼容性好但是不够美观,hash服务端无法获取,不利于seo优化
+- history模式：historyApi + popState美观,刷新会出现404 => cli webpack 配置了一个插件 history-fallback,不会出现404
+
+## 对vuex的个人理解
+
+- vuex是专门为vue提供的全局状态管理系统,用于多个组件中数据共享、数据缓存等。(无法持久化、内部核心原理是通过创造一个全局实例new Vue)
+实现的原理方法: replaceState、subscribe、registerModule、namespace(modules)、辅助函数....
+
+## vue中的性能优化有哪些
+- 数据层级不易过深,合理设置响应式数据
+- 使用数据时缓存值的结果,不频繁取值
+- 合理设置key属性
+- v-show和v-if的选取
+- 控制组件粒度 => vue采用组件级更新
+- 采用函数式组件 => 函数式组件开销低
+- 采用异步组件 => 借助webpack分包的能力
+- 使用keep-alive缓存组件
+- 虚拟滚动，时间分片等策略
+- 打包优化 
+
+## mutation和action的区别
+mutation: 主要在于修改状态,必须是同步执行\
+action：执行业务代码,方便复用,逻辑可以为异步,不能直接修改状态
+
+## vue中的设计模式
+- **单例模式**：单例模式就是整个程序有且仅有一个实例
+- **工厂模式**: 传入参数即可创建实例(createElement)
+- **发布订阅模式**：订阅者把自己想订阅的事件注册到调度中心,当该事件触发时候,发布者发布该事件到调度中心,由调度中心统一调度订阅者注册到调度中心的处理代码
+- **观察者模式**：watcher&dep的关系
+- **代理模式**：代理模式给某一个对象提供一个代理对象,并由代理对象控制对原对象的引用。_data属性、proxy、节流防抖(vm.xxx = vm.data.xxx)
+- **装饰模式**：vue2装饰器的用法(对功能进行增强 @)
+- **中介者模式**： 中介者是一个行为设计模式,通过提供一个统一的接口让系统的不同部分进行通信-vuex
+- **策略模式**：策略模式指对象有某个行为,但是在不同的场景中,该行为有不同的实现方案
+- **外观模式**：提供了统一的接口,用来访问子系统中的一群接口
