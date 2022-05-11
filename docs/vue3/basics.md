@@ -144,7 +144,116 @@ setUp() {
   // watch(secondName,  (newVal, oldVal) => {
   //   console.log(newVal,oldVal)
   // })
-
-
 }
+```
+## 生命周期
+setup是围绕beforeCreate和created生命周期钩子运行的,所以不需要定义,所有的操作在setup中也能触发
+```html
+<script>
+  import {onMounted, onUpdated, onUnmounted} from 'vue'
+
+  export default {
+    setup() {
+      onMounted(() => {
+
+      })
+    }
+  }
+</script>
+
+```
+
+## provide & inject
+```html
+
+<script>
+  // 父
+  import {provide, ref, readonly} from 'vue'
+
+  export default {
+    setup() {
+      const name = ref('feng')
+
+      provide('name', readonly(name))
+    }
+  }
+</script>
+
+<script>
+  // 子孙组件
+  import {inject} from 'vue'
+
+  export default {
+    setup() {
+      const name = inject('name')
+      return {
+        name
+      }
+    }
+  }
+</script>
+
+```
+
+## 顶层编写方式
+```html
+<template>
+  <h2>{{name}}</h2>
+</template>
+<script setup>
+  import {provide, ref, readonly, defineProps, defineEmit} from 'vue'
+  const name = ref('feng')
+  provide('name', readonly(name))
+  const props = defineProps({
+    message: {
+      type: String,
+      default: 'feng'
+    }
+  })
+  const emit = defineEmit(['increment', 'decrement'])
+  emit('increment', {})
+</script>
+```
+## h函数
+```html
+<script>
+  import {h, ref} from 'vue'
+
+  export default {
+
+    // data() {
+    //   return {
+    //     counter: 0
+    //   }
+    // }
+    // setup() {
+    //   const counter = ref(0)
+    //   return {
+    //     counter
+    //   }
+    // }
+
+    // render() {
+    //   return h('h2', {class: 'title'}, [
+    //     h('h2', null, `当前计数${this.counter}`),
+    //     h('button', {
+    //       onClick: () => counter++
+    //     }, "按钮")
+    //   ])
+    // }
+
+    setup() {
+      const counter = ref(0)
+      return () => {
+          return h('h2', {class: 'title'}, [
+            h('h2', null, `当前计数${counter.value}`),
+            h('button', {
+              onClick: () => counter.value++
+            }, "按钮")
+          ])
+      }
+    }
+  }
+
+</script>
 ```
