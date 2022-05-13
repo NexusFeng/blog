@@ -1,0 +1,84 @@
+## 题目描述
+输入一个数组[1,2,3,4,5,6,7]，k=3,即旋转3步,输出[5,6,7,1,2,3,4]
+## 两种思路
+- 思路1: 把末尾的元素挨个pop,然后unshift到数组前面
+- 思路2: 把数组拆分,最后concat拼接到一起
+## 实现
+### 思路一
+```ts
+function rotate1(arr: number[], k: number): number[] {
+  const length = arr.length
+  if(!k || length === 0) return arr
+  // k可能超过length,当为字符串时,Math.abs(k % length)返回NaN,i < NaN为false
+  const step = Math.abs(k % length)
+  for (let i = 0; i < step; i++) {
+    const n = arr.pop()
+    if(n != null) {
+      arr.unshift(n)
+    }
+  }
+  return arr
+}
+
+const arr = [1,2,3,4,5,6,7]
+const arr1 = rotate(arr1,3)
+```
+### 思路二
+```ts
+function rotate2(arr: number[], k: number): number[] {
+  const length = arr.length
+  if(!k || length === 0) return arr
+  // k可能超过length
+  const step = Math.abs(k % length)
+  
+  const part1 = arr.slice(-step)
+  const part2 = arr.slice(0, length - step)
+  const part3 = part1.concat(part2)
+  return part3
+}
+
+const arr = [1,2,3,4,5,6,7]
+const arr1 = rotate(arr1,3)
+```
+## 单元测试
+```ts
+// rotate.test.ts
+import{ rotate1, rotate2 } from './'
+
+describe('数组旋转', () => {
+  it('正常情况', () => {
+    const arr = [1, 2, 3, 4, 5, 6, 7]
+    const k = 3
+    const res = rotate1(arr, k)
+    expect(res).toEqual([5, 6, 7, 1, 2, 3, 4])
+  })
+
+  it('数组为空', () => {
+    const arr = []
+    const k = 3
+    const res = rotate1(arr, k)
+    expect(res).toEqual([])
+  })
+
+  it('k为负值', () => {
+    const arr = [1, 2, 3, 4, 5, 6, 7]
+    const k = 3
+    const res = rotate1(arr, k)
+    expect(res).toEqual([5, 6, 7, 1, 2, 3, 4])
+  })
+
+  it('k是0', () => {
+    const arr = [1, 2, 3, 4, 5, 6, 7]
+    const k = 0
+    const res = rotate1(arr, k)
+    expect(res).toEqual([1, 2, 3, 4, 5, 6, 7])
+  })
+
+  it('k不是数字', () => {
+    const arr = [1, 2, 3, 4, 5, 6, 7]
+    const k = 'aaa'
+    const res = rotate1(arr, k)
+    expect(res).toEqual(arr)
+  })
+})
+```
