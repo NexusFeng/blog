@@ -11,10 +11,10 @@ function rotate1(arr: number[], k: number): number[] {
   if(!k || length === 0) return arr
   // k可能超过length,当为字符串时,Math.abs(k % length)返回NaN,i < NaN为false
   const step = Math.abs(k % length)
-  for (let i = 0; i < step; i++) {
+  for (let i = 0; i < step; i++) {// 时间复杂度O(n)
     const n = arr.pop()
     if(n != null) {
-      arr.unshift(n)
+      arr.unshift(n)// 数组是一个有序,连续的内存空间,unshift非常慢,导致循环替换位置,导致时间复杂度为O(n),同类型还有shift、splice
     }
   }
   return arr
@@ -23,6 +23,7 @@ function rotate1(arr: number[], k: number): number[] {
 const arr = [1,2,3,4,5,6,7]
 const arr1 = rotate(arr1,3)
 ```
+时间复杂度O(n^2),空间复杂度O(1)
 ### 思路二
 ```ts
 function rotate2(arr: number[], k: number): number[] {
@@ -40,7 +41,8 @@ function rotate2(arr: number[], k: number): number[] {
 const arr = [1,2,3,4,5,6,7]
 const arr1 = rotate(arr1,3)
 ```
-## 单元测试
+时间复杂度O(1),空间复杂度O(n)
+## Jest单元测试
 ```ts
 // rotate.test.ts
 import{ rotate1, rotate2 } from './'
@@ -81,4 +83,25 @@ describe('数组旋转', () => {
     expect(res).toEqual(arr)
   })
 })
+```
+
+## 性能测试
+```js
+const arr1 = []
+for(let i = 0; i < 10* 10000; i++) {
+  arr1.push(i)
+}
+console.time('rotate1')
+rotate1(arr1, 9*10000)
+console.timeEnd('rotate1')
+// 约880ms
+
+const arr2 = []
+for(let i = 0; i < 10* 10000; i++) {
+  arr2.push(i)
+}
+console.time('rotate2')
+rotate2(arr2, 9*10000)
+console.timeEnd('rotate2')
+// 约1ms
 ```
