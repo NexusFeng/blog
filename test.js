@@ -8,22 +8,42 @@ console.log(NaN == NaN)
 console.log(map.get(NaN))
 
 // console.log(map.__proto__.__proto__)
-const arr = [
-  ["a", "a"],
-  ["b", "b"],
-]
-console.log(new Map(arr))
-
-const map = new Map().set("a", "a").set("b", "b")
-
-let obj = Object.create(null)
-for (let [k, v] of map) {
-  obj[k] = v
+const tree = {
+  val: "a",
+  children: [
+    {
+      val: "b",
+      children: [
+        {
+          val: "d",
+          children: [],
+        },
+        {
+          val: "e",
+          children: [],
+        },
+      ],
+    },
+    {
+      val: "c",
+      children: [
+        {
+          val: "f",
+          children: [],
+        },
+        {
+          val: "g",
+          children: [],
+        },
+      ],
+    },
+  ],
 }
-console.log(obj)
-console.log(map.prototype)
 
-let set = new Set()
-set.add([])
-set.add([])
-console.log(set) // { [], [] }
+let arr = [],
+  arr1 = [[1]]
+let [l] = arr1.shift()
+for (let i = 0; i < 5; i++) {
+  arr.push(["a", l++])
+}
+console.log(arr)
