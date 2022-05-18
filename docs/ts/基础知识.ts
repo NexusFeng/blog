@@ -272,7 +272,7 @@ class Person6 {
 }
 
 const person6 = new Person6('feng')
-person6.name = 'hello'
+// person6.name = 'hello' 报错
 console.log(person6.name)
 
 // 抽象类不能实例化，只能被继承
