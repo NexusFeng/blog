@@ -1,2 +1,2 @@
-"use strict";
-const students = 'feng';
+// 注释
+var students = 'feng';
