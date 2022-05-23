@@ -114,3 +114,62 @@ map<string>(['123'])
 
 join(1,'1')
 
+// 类中的泛型 
+// class DataManager {
+//   constructor(private data: string[]|number[]){}
+//   getItem(index:number): string| number {
+//     return this.data[index]
+//   }
+// }
+
+
+interface Item {
+  name: string
+}
+
+class DataManager<T extends Item> {
+  constructor(private data: T[]){}
+  getItem(index:number): string {
+    return this.data[index].name
+  }
+}
+
+const data = new DataManager([{name:'11'}])
+data.getItem(0)
+
+// 泛型类型 使用泛型作为一个具体的类型注解
+function hello<T>(params: T) {
+  return params
+}
+const func1: <T>(params: T) => T = hello
+
+
+const func: <T>() => string = <T>() => {
+  return '123'
+}
+
+// 命名空间
+namespace Home {
+class One{
+  constructor() {}
+}
+
+class Two{
+  constructor() {}
+}
+class Three{
+  constructor() {}
+}
+
+export class Com {
+  constructor() {
+    new One()
+    new Two()
+    new Three()
+  }
+}
+}
+
+new Home.Com()// 调用命名空间的Com
+
+

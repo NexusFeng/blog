@@ -47,3 +47,6 @@ for (let i = 0; i < 5; i++) {
   arr.push(["a", l++])
 }
 console.log(arr)
+
+let arr2 = [1, 2, 3]
+console.log(arr2[4])
