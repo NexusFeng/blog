@@ -172,4 +172,116 @@ export class Com {
 
 new Home.Com()// 调用命名空间的Com
 
+// 描述文件
+// jquery.d.ts
+// 定义全局变量 
+// declare var $ : (param: () => void) => void
 
+// 定义全局函数
+interface JqueryInstance{
+  html: (html: string) => JqueryInstance
+}
+declare function $(readyFunc: () => void):void
+// $('body').html('<h1>123</h1>') 函数重载
+declare function $(selector: string):JqueryInstance
+// 如何对对象进行类型定义,以及对类进行类型定义,以及命名空间的嵌套
+// new $.fn.init()
+declare namespace $ {
+  namespace fn {
+    class init{}
+  }
+}
+
+// 使用interface的语法实现函数重载
+// interface Jquery {
+//   (readyFunc: () => void): void
+//   (selector: string):JqueryInstance
+// }
+// declare var $: Jquery
+
+// es6模块化
+// import $ from 'Jquery'
+declare module 'Jquery' {
+  interface JqueryInstance{
+    html: (html: string) => JqueryInstance
+  }
+  // 混合类型
+  function $(readyFunc: () => void):void
+  function $(selector: string):JqueryInstance
+  namespace $ {
+    namespace fn {
+      class init{}
+    }
+  }
+  export = $
+}
+
+// 泛型中的keyof
+interface Person {
+  name: string;
+  age: number;
+  gender: string
+}
+// keyof第一次循环
+// type T = 'name'
+// key: 'name'
+// Person['name']
+
+// keyof第二次循环
+// type T = 'age'
+// key: 'age'
+// Person['age']
+
+class Teacher {
+  constructor(private info: Person) {}
+  // keyof类似于循环,拿到Person的属性
+  getInfo<T extends keyof Person>(key: T): Person[T] {
+    return this.info[key]
+    // 类型保护
+    // if(key === 'name' || key === 'age' || key === 'gender') {
+    //   return this.info[key]
+    // }
+
+  }
+}
+
+const teacher1 = new Teacher({
+  name: 'dell',
+  age: 18,
+  gender: 'male'
+})
+
+// const test = teacher.getInfo('name') as string
+const test1 = teacher1.getInfo('name')
+
+// 类的装饰器
+// 装饰器本身是一个函数
+// 类装饰器接收的参数是构造函数
+// 装饰器通过@符号来使用
+function testDecorator(flag: boolean) {
+  if (flag) {
+    return function testDecorator(constructor: any) {
+      constructor.prototype.getName = () => {
+        console.log('decorator')
+      }
+    }
+  } else {
+    return function(constructor: any){}
+  }
+  
+}
+
+
+function testDecorator1(constructor: any) {
+  constructor.prototype.getName = () => {
+    console.log('decorator1')
+  }
+}
+
+@testDecorator(true)
+@testDecorator1 // 先执行1，执行是从上到下，从右到左执行
+class Test {}
+
+const test = new Test()
+const test11 = new Test(); // console.log只打印一次 因为只是对类做修饰
+(test as any).getName()
