@@ -1,52 +1,31 @@
-// let map = new Map()
-
-map.set("a", "a")
-map.set("b", "b")
-map.set(NaN, "c")
-
-console.log(NaN == NaN)
-console.log(map.get(NaN))
-
-// console.log(map.__proto__.__proto__)
-const tree = {
-  val: "a",
-  children: [
-    {
-      val: "b",
-      children: [
-        {
-          val: "d",
-          children: [],
-        },
-        {
-          val: "e",
-          children: [],
-        },
-      ],
-    },
-    {
-      val: "c",
-      children: [
-        {
-          val: "f",
-          children: [],
-        },
-        {
-          val: "g",
-          children: [],
-        },
-      ],
-    },
-  ],
+function TreeNode(val, left, right) {
+  this.val = val === undefined ? 0 : val
+  this.left = left === undefined ? null : left
+  this.right = right === undefined ? null : right
 }
 
-let arr = [],
-  arr1 = [[1]]
-let [l] = arr1.shift()
-for (let i = 0; i < 5; i++) {
-  arr.push(["a", l++])
+var generateTrees = function(n) {
+  let memo = new Map()
+  const build = (lo, hi) => {
+    let res = []
+    if (lo > hi) {
+      res.push(null)
+      return res
+    }
+    let memoKey = `${lo}&${hi}`
+    if (memo.has(memoKey)) return memo.get(memoKey)
+    for (let i = lo; i <= hi; i++) {
+      let leftTree = build(lo, i - 1)
+      let rightTree = build(i + 1, hi)
+      for (let left of leftTree) {
+        for (let right of rightTree) {
+          res.push(new TreeNode(i, left, right))
+        }
+      }
+    }
+    memo.set(memoKey, res)
+    return res
+  }
+  return build(1, n)
 }
-console.log(arr)
-
-let arr2 = [1, 2, 3]
-console.log(arr2[4])
+generateTrees(3)

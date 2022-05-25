@@ -285,3 +285,152 @@ class Test {}
 const test = new Test()
 const test11 = new Test(); // console.log只打印一次 因为只是对类做修饰
 (test as any).getName()
+
+
+// 类装饰器另一种写法
+function testDecorator2<T extends new (...args: any[]) => any>(constructor: T) {
+  return class extends constructor {
+    name = 'lee'
+    getName() {
+      return this.name
+    }
+  }
+}
+
+@testDecorator2
+class Test1 {
+  name: string;
+  constructor(name: string) {
+    this.name = name
+  }
+}
+
+const test2 = new Test1('feng');
+(test2 as any).getName()// Test1类上并没有这个方法，改方法在装饰器中,所以直接调用ts解析不到
+
+// 解决上述问题
+
+function testDecorator3() {
+  return function <T extends new (...args: any[]) => any>(constructor: T) {
+    return class extends constructor {
+      name = 'lee'
+      getName() {
+        return this.name
+      }
+    }
+  }
+}
+
+const Test3 = testDecorator3()(
+  class {
+    name: string;
+    constructor(name: string) {
+      this.name = name
+    }
+  }
+)
+
+
+const test3 = new Test3('feng');
+test3.getName()// 不会报错
+
+// 类中方法的装饰器
+// 普通方法 target 对应的是类的 prototype
+// 静态方法 target 对应的是类的构造函数
+function getNameDecorator (target: any, key: string, descriptor: PropertyDescriptor) {
+  console.log(target)
+  descriptor.writable = false
+}
+
+class Test4{
+  name: string;
+  constructor(name: string) {
+    this.name = name
+  }
+  @getNameDecorator
+  getName() {
+    return this.name
+  }
+}
+
+const test4 = new Test4('feng');
+test4.getName()
+
+// 类中访问器的装饰器
+function visitDecorator (target: any, key: string, descriptor: PropertyDescriptor) {
+  descriptor.writable = false
+}
+
+class Test5{
+  private _name: string;
+  constructor(name: string) {
+    this._name = name
+  }
+  get name() {
+    return this._name
+  }
+  @visitDecorator
+  set name(name: string) {
+    this._name = name
+  }
+}
+
+const test5 = new Test5('feng');
+test5.name = '13213'
+console.log(test5.name)
+
+// 类中属性的装饰器 参数装饰器
+function nameDecorator (target: any, key: string): any {
+  const descriptor: PropertyDescriptor = {
+    writable: false
+  }
+  return descriptor
+}
+// 原型，方法名， 参数所在的位置
+function paramDecorator(target: any, methods: string, paramsIndex: number) {
+  console.log(target, methods, paramsIndex)
+}
+
+class Test6{
+  @nameDecorator
+  name = 'feng';
+
+  getInfo( @paramDecorator name: string, age: number){
+    console.log(name, age)
+  }
+}
+
+const test6 = new Test6();
+test6.getInfo('feng', 18)
+
+// 装饰器示例
+const userInfo: any = undefined
+
+function catchError(msg: string) {
+return function (target:any, key: string, descriptor: PropertyDescriptor) {
+  const fn = descriptor.value
+  descriptor.value = function () {
+    try {
+      fn()
+    } catch(e) {
+      console.log(msg)
+    }
+  }
+}
+}
+class Test7 {
+  @catchError('serInfo.name')
+  getName() {
+    return userInfo.name
+  }
+  @catchError('userInfo.age')
+  getAge() {
+    return userInfo.age
+  }
+}
+
+const test7 = new Test7()
+test7.getName()
+
+// 装饰器的执行顺序 
+// 类中的方法上的装饰器是优先执行,类上的装饰器是后执行
