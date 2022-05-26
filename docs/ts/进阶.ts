@@ -53,7 +53,7 @@ const Status = {
   ONLINE: 1,
   DELETED: 2
 }
-function getResult(status) {
+function getResult(status: number) {
   // if(status === 0) {
   //   return 'offline'
   // } else if(status === 1) {
@@ -83,12 +83,12 @@ enum Status1 {
 console.log(Status.OFFLINE) //0
 console.log(Status.ONLINE) //1
 console.log(Status.DELETED) //2
-function getResult1(status) {
-  if(status === Status.OFFLINE) {
+function getResult1(status: number) {
+  if(status === Status1.OFFLINE) {
     return 'offline'
-  } else if(status === Status.ONLINE) {
+  } else if(status === Status1.ONLINE) {
     return 'online'
-  } else if(status === Status.DELETED){
+  } else if(status === Status1.DELETED){
     return 'deleted'
   }
   return 'error'
