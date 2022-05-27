@@ -1,31 +1,28 @@
-function TreeNode(val, left, right) {
-  this.val = val === undefined ? 0 : val
-  this.left = left === undefined ? null : left
-  this.right = right === undefined ? null : right
-}
-
-var generateTrees = function(n) {
-  let memo = new Map()
-  const build = (lo, hi) => {
-    let res = []
-    if (lo > hi) {
-      res.push(null)
-      return res
-    }
-    let memoKey = `${lo}&${hi}`
-    if (memo.has(memoKey)) return memo.get(memoKey)
-    for (let i = lo; i <= hi; i++) {
-      let leftTree = build(lo, i - 1)
-      let rightTree = build(i + 1, hi)
-      for (let left of leftTree) {
-        for (let right of rightTree) {
-          res.push(new TreeNode(i, left, right))
-        }
-      }
-    }
-    memo.set(memoKey, res)
-    return res
+let longestPalindrome = function(s) {
+  let n = s.length
+  if (n < 2) {
+    return s
   }
-  return build(1, n)
+
+  let begin = 0
+  let max = 1
+
+  let spread = (start, end) => {
+    while (s[start] === s[end] && start >= 0 && end < n) {
+      let len = end - start + 1
+      if (len > max) {
+        max = len
+        begin = start
+      }
+      start--
+      end++
+    }
+  }
+
+  for (let mid = 0; mid < n; mid++) {
+    spread(mid, mid)
+    // spread(mid, mid + 1)
+  }
+  return s.substr(begin, max)
 }
-generateTrees(3)
+console.log(longestPalindrome("babad"))
