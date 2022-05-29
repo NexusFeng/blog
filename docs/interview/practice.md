@@ -213,3 +213,111 @@ for (let num of arr) {
   console.log(res) // 一秒一秒输出数字
 }
 ```
+
+## offsetHeight、scrollHeight、clientHeight 区别
+
+- offsetHeight offsetWidth: **border + padding + content**
+- clientHeight clientWidth: **padding + content**
+- scrollHeight scrollWidth: **padding + 实际内容尺寸**
+
+## HTMLCollection 和 NodeList 区别
+
+**Node 和 Element**
+
+- DOM 是一棵树,所有节点都是 Node
+- Node 是 Element 的基类
+- Element 是其他 HTML 元素的基类,如 HTMLDivElement
+
+**HTMLCollection 和 NodeList**
+
+- **两者都不是数组,而是类数组**
+- HTMLCollection 是 Element 的集合
+- NodeList 是 Node 的集合
+  **获取 Node 和 Element 的返回的结果可能不一样,如: elem.childNodes 和 elem.children 不一样,前者会包含 Text 和 Comment 节点,后者不会**
+
+## vue computed 和 watch 的区别
+
+- computed 用于计算产生新的数据
+- watch 用于监听现有数据
+
+## Vue 组件的通讯方式
+
+- props 和`$emit`
+- 自定义事件(bus)
+
+```js
+// vue2new vue即可,vue3得引入第三方库
+let bus = new vue()
+
+// 接收
+bus.on("add", this.add)
+//关闭
+bus.off("add", this.add)
+
+// 发送
+bus.emit("add", "hello")
+```
+
+- `$attrs $listeners`,vue3 移除了`$listeners`
+
+- `$parent $children`,vue3 移除了`$children`
+- `$refs`
+- provide/inject
+- Vuex
+
+不同场景
+
+- 父子组件
+- 上下级组件(跨多级)通讯
+- 全局组件
+
+## vuex mutation action 区别
+
+- mutation:原子操作；必须包含同步代码
+- action: 可包含多个 mutation；可包含异步代码
+
+## js 严格模式有什么特点
+
+- 全局变量必须先声明
+- 禁止使用 with
+- 创建 eval 作用域
+- 禁止 this 指向 window
+- 函数参数不能重名
+
+## HTTP 跨域时为何要发送 options 请求
+
+- options 请求,是跨域请求之前的预检查
+- **浏览器自行发起的**,无需我们干预
+- 不影响实际功能
+
+**跨域请求**
+
+- 浏览器同源策略
+- 同源策略一般限制 Ajax 网络请求,不能跨域请求 server
+- 不会限制`<link><img><script><iframe>`加载第三方资源
+
+**JSONP 解决跨域**
+
+```js
+// www.a.com
+<script>
+window.onSuccess = function(data){
+  console.log(data)
+}
+</script>
+<script scr = 'https://www.b.com'>
+// https://www.b.com返回一段字符串: 'onSuccess({error: 0, data: {}})'
+```
+
+**CORS 解决跨域**
+
+```js
+// CORS配置允许跨域(服务端)
+response.setHeader("Access-Control-Allow-Origin", "http://localhost:8081") //或者"*"
+response.setHeader("Access-Control-Allow-Headers", "X-Requested-with")
+response.setHeader(
+  "Access-Control-Allow-Methods",
+  "PUT,POST,GET,DELETE,OPTIONS"
+)
+response.setHeader("Access-Control-Allow-Credentials", "true") //允许跨域接收cookie
+```

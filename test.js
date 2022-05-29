@@ -1,28 +1,19 @@
-let longestPalindrome = function(s) {
-  let n = s.length
-  if (n < 2) {
-    return s
-  }
-
-  let begin = 0
-  let max = 1
-
-  let spread = (start, end) => {
-    while (s[start] === s[end] && start >= 0 && end < n) {
-      let len = end - start + 1
-      if (len > max) {
-        max = len
-        begin = start
-      }
-      start--
-      end++
+function permute(nums) {
+  const res = []
+  const backtrack = (path) => {
+    console.log(path)
+    if (path.length === nums.length) {
+      res.push(path)
+      return
     }
+    1
+    nums.forEach((n) => {
+      if (path.includes(n)) return
+      backtrack(path.concat(n))
+    })
   }
 
-  for (let mid = 0; mid < n; mid++) {
-    spread(mid, mid)
-    // spread(mid, mid + 1)
-  }
-  return s.substr(begin, max)
+  backtrack([])
+  return res
 }
-console.log(longestPalindrome("babad"))
+permute([1, 2, 3])
