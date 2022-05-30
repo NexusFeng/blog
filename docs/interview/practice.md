@@ -163,6 +163,7 @@ console.log(f.getName()) // feng
 
 **为什么是三次握手?**
 
+- 保持序列号同步,三次不能保证序列号一样
 - Client 发包,Server 接收。Server: 有 Client 要找我
 - Server 发包,Client 接收。Client: Server 已经收到消息了
 - Client 发包,Server 接收。Server: Client 要准备发送了
@@ -321,3 +322,32 @@ response.setHeader(
 )
 response.setHeader("Access-Control-Allow-Credentials", "true") //允许跨域接收cookie
 ```
+
+token 需要手动加,cookie 浏览器会自带,
+
+## js 内存泄漏如何检测?场景有哪些?
+
+performance，memory 一直在上升,锯齿状最佳
+
+场景
+
+- 被全局变量、函数引用,组件销毁时未清除
+- 被全局事件、定时器引用,组件销毁时未清除
+- 被自定义事件引用,组件销毁时未清除
+
+  垃圾回收算法
+
+- 引用计数(有循环引用问题)
+- 标记清除(目前方式)
+
+**WeakMap、WeakSet 弱引用**
+
+- WeakMap 的 key 只能是引用类型,因为值类型会直接被回收,没法用 size、forEach,内部元素不稳定
+
+## nodejs 和浏览器的事件循环有什么区别
+
+**宏任务和微任务**
+
+- 宏任务,如 setTimeout setInterval 网络请求 ajax
+- 微任务,如 promise async/await,页面渲染之前触发
+- 微任务在下一轮 DOM 渲染之前执行,宏任务在之后执行
