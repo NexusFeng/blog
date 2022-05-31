@@ -8,7 +8,7 @@
 ```js
 function ajax1(url, successFn) {
   const xhr = new XMLHttpRequest()
-  xhr.open("GET", url, false)
+  xhr.open('GET', url, false)
   xhr.onreadystatechange = function() {
     if (xhr.readyState == 4) {
       if (xhr.status == 20) {
@@ -89,7 +89,7 @@ const fn3 = (a, b) => (b === undefined ? (b) => a * b : a * b)
 
 ```js
 const obj = {
-  name: "feng",
+  name: 'feng',
   getName: () => {
     return this.name
   },
@@ -101,7 +101,7 @@ console.log(obj.getName()) // undefined
 
 ```js
 const obj = {
-  name: "feng",
+  name: 'feng',
 }
 obj.__proto__.getName = () => {
   return this.name
@@ -116,15 +116,15 @@ const Foo = (name, age) => {
   this.name = name
   this.age = age
 }
-const f = new Foo("feng", 18) // Error: Foo is not a constructor
+const f = new Foo('feng', 18) // Error: Foo is not a constructor
 ```
 
 - 动态上下文中的回调函数
 
 ```js
-const btn1 = document.getElementById("btn1")
-btn1.addEventListener("click", () => {
-  this.innerHtml = "clicked" // this 此时是window
+const btn1 = document.getElementById('btn1')
+btn1.addEventListener('click', () => {
+  this.innerHtml = 'clicked' // this 此时是window
 })
 ```
 
@@ -133,7 +133,7 @@ btn1.addEventListener("click", () => {
 
 ```js
 mounted: () => {
-  console.log("msg", this.msg) // Error: Cannot read properties of undefined(reading 'name')
+  console.log('msg', this.msg) // Error: Cannot read properties of undefined(reading 'name')
 }
 ```
 
@@ -149,7 +149,7 @@ class Foo {
     return this.name
   }
 }
-const f = new Foo("feng", "nexus")
+const f = new Foo('feng', 'nexus')
 console.log(f.getName()) // feng
 ```
 
@@ -251,12 +251,12 @@ for (let num of arr) {
 let bus = new vue()
 
 // 接收
-bus.on("add", this.add)
+bus.on('add', this.add)
 //关闭
-bus.off("add", this.add)
+bus.off('add', this.add)
 
 // 发送
-bus.emit("add", "hello")
+bus.emit('add', 'hello')
 ```
 
 - `$attrs $listeners`,vue3 移除了`$listeners`
@@ -314,13 +314,13 @@ window.onSuccess = function(data){
 
 ```js
 // CORS配置允许跨域(服务端)
-response.setHeader("Access-Control-Allow-Origin", "http://localhost:8081") //或者"*"
-response.setHeader("Access-Control-Allow-Headers", "X-Requested-with")
+response.setHeader('Access-Control-Allow-Origin', 'http://localhost:8081') //或者"*"
+response.setHeader('Access-Control-Allow-Headers', 'X-Requested-with')
 response.setHeader(
-  "Access-Control-Allow-Methods",
-  "PUT,POST,GET,DELETE,OPTIONS"
+  'Access-Control-Allow-Methods',
+  'PUT,POST,GET,DELETE,OPTIONS'
 )
-response.setHeader("Access-Control-Allow-Credentials", "true") //允许跨域接收cookie
+response.setHeader('Access-Control-Allow-Credentials', 'true') //允许跨域接收cookie
 ```
 
 token 需要手动加,cookie 浏览器会自带,
@@ -346,8 +346,100 @@ performance，memory 一直在上升,锯齿状最佳
 
 ## nodejs 和浏览器的事件循环有什么区别
 
-**宏任务和微任务**
+**浏览器事件循环: 宏任务和微任务**
 
 - 宏任务,如 setTimeout setInterval 网络请求 ajax
 - 微任务,如 promise async/await,页面渲染之前触发
 - 微任务在下一轮 DOM 渲染之前执行,宏任务在之后执行
+
+**nodejs 异步**
+
+- Nodejs 同样使用 ES 语法,也是单线程,也需要异步
+- 异步任务也分: 宏任务 + 微任务
+- 宏任务和微任务,**分不同类型,有不同优先级**
+
+- 执行同步代码
+- 执行微任务
+- 按顺序执行 6 个类型的宏任务(每个开始之前都执行当前的微任务)
+
+**宏任务优先级**
+
+- Timers - setTimeout setInterval
+- I/O callbacks - 处理网络、流、TCP 的错误回调
+- idle,prepare - 闲置状态(nodejs 内部使用)
+- Poll 轮询 - 执行 poll 中的 I/O 队列
+- Check 检查 - 储存 setImmediate 回调
+- Close callbacks - 关闭回调,如 socket.on('close')
+
+**微任务优先级**
+
+- promise,async/await,process.nextTick
+- **process.nextTick 优先级最高**
+
+```js
+console.info('start')
+setImmediate(() => {
+  console.info('setImmediate')
+})
+setTimeout(() => {
+  console.info(timeout)
+})
+Promise.resolve().then(() => {
+  console.info('promise then')
+})
+process.nextTick(() => {
+  console.info('nextTick')
+})
+console.info('end')
+// start
+// end
+// nextTick
+// promise then
+// timeout
+// setImmediate
+```
+
+## vdom 很快吗
+
+- vdom 并不快,JS 直接操作 DOM 才是最快的
+- 但'数据驱动视图'要有合适的技术方案,不能全部 DOM 重建
+- vdom 就是目前最合适的技术方案(并不是因为他快,而是合适)
+
+## 遍历数组,for 和 forEach 那个快
+
+- for 更快
+- forEach 每次都要创建一个函数来调用,而 for 不会创建函数
+- 函数需要独立作用域,会有额外的开销
+
+```js
+const arr = []
+for (let i = 0; i < 100 * 10000; i++) {
+  arr.push(i)
+}
+const length = arr.length
+
+console.time('for')
+let n1 = 0
+for (let i = 0; i < length; i++) {
+  n1++
+}
+console.timeEnd('for') //3.7ms
+
+console.time('forEach')
+let n2 = 0
+arr.forEach(() => n2++)
+console.timeEnd('forEach') // 15.1ms
+```
+
+## 描述 js-bridge 的实现原理
+
+**概念**
+
+- js 无法直接调用 native API(手机 app)
+- 需要通过一些特定的'格式'来调用
+- 这些'格式'就统称为 JS-Bridge,例如微信 JSSDK
+
+**常见实现方式**
+
+- 注册全局 api
+- URL Scheme(自造一种协议标准,在 app 层做拦截)
