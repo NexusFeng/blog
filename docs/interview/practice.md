@@ -443,3 +443,35 @@ console.timeEnd('forEach') // 15.1ms
 
 - 注册全局 api
 - URL Scheme(自造一种协议标准,在 app 层做拦截)
+
+## RAF 和 RIC 区别
+
+- requestAnimationFrame 每次渲染完都会执行,**高优**
+- requestIdleCallback 空闲时才执行,**低优**
+- **两者都是宏任务,因为都要等 DOM 渲染完才执行,肯定是宏任务**
+
+## vue 什么时候操作 DOM 比较合适
+
+- mounted 和 updated 都不能保证子组件全部挂载完成
+- 使用`$nextTick` 渲染 DOM
+
+## vue2 vue3 React 三者 diff 算法有何区别
+
+tree diff 优化,优化后时间复杂度为 O(n),之前为 O(n^3)
+
+- 只比较同一层级,不跨级比较
+- tag 不同则删掉重建(不再去比较内部细节)
+- 子节点通过 key 区分(key 的重要性)
+
+- React diff 仅右移
+- Vue2 双端比较
+- Vue3 最长递增子序列
+
+## vue-router MemoryHistory
+
+vue-router 三种模式
+
+- Hash
+- WebHistory
+- MemoryHistory(v4 之前叫 abstract history)
+  路由不能前进和后退,地址栏不会展示子组件的路由
