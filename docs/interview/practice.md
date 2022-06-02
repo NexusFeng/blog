@@ -475,3 +475,82 @@ vue-router 三种模式
 - WebHistory
 - MemoryHistory(v4 之前叫 abstract history)
   路由不能前进和后退,地址栏不会展示子组件的路由
+
+## 移动端 H5 click 有 300ms 延迟,如何解决
+
+- 初期解决方案 FastClick 库
+- 现代浏览器的改进`content="width=device-width"`不会有 300ms 延迟
+
+```js
+<meta name="viewport" content="width=device-width"></meta>
+```
+
+## 网络请求中,token 和 cookie 有什么区别
+
+- cookie: HTTP 标准;跨域限制;配合 session 使用
+- token: 无标准;无跨域限制;用于 JWT
+
+**cookie**
+
+- HTTP 无状态,每次请求都要带 cookie,以帮助识别身份
+- 服务端也可以向客户端 set-cookie,cookie 大小限制 4kb
+- 默认有跨域限制: 不可跨域共享、传递 cookie
+
+**cookie 和 session**
+
+- cookie 用于登录验证,储存用户标识(如 userId)
+- session 在服务端,储存用户详细信息,和 cookie 信息一一对应
+- cookie+session 是常见登录验证解决方案
+- session 会存很多用户信息,cookie 存一个用户信息
+
+**token vs cookie**
+
+- cookie 是 HTTP 规范,而 token 是自定义传递
+- cookie 会默认被浏览器储存,而 token 需自己储存
+- token 默认没有跨域限制
+
+**JWT(JSON WEB TOKEN)**: 用户登录校验,取代 cookie+ session 方式
+
+- 前端发起登录,后端验证成功之后,返回一个加密的 token
+- 前端自行储存这个 token(其中包含了用户信息,加密了)
+- 以后访问服务端接口,都带着这个 token,作为用户信息
+
+## session 和 JWT 那个更好
+
+**session 优点**
+
+- 原理简单,易于学习
+- 用户信息储存再服务端,可快速封禁某个用户
+
+**session 缺点**
+
+- 占用服务端内存,硬件成本高
+- 多进程,多服务时,不好同步--需要使用第三方缓存,如 redis
+- 默认有跨域限制
+
+**JWT 优点**
+
+- 不占用服务端内存
+- 多进程、多服务器 不受影响
+- 没有跨域限制
+
+**JWT 缺点**
+
+- 用户信息储存再客户端,无法快速封禁某用户
+- 万一服务端秘钥被泄漏,则用户信息全部丢失
+- token 体积一般大于 cookie,会增加请求的数据量
+
+## 如何实现 sso 单点登录
+
+- 主域名相同,则可共享 cookie
+- 主域名不同,则需使用 SSO(类似于 OAuth 2.0)
+
+**基于 cookie**
+
+- cookie 默认不可跨域共享,但是有些情况下可设置为共享(主域名相同 www.baidu.com image.baidu.com)
+- 设置 cookie domain 为主域名,即可共享 cookie
+
+**SSO**
+
+- 主域名完全不同,则 cookie 无法共享
+- 可使用 SSO 技术方案
