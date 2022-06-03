@@ -554,3 +554,39 @@ vue-router 三种模式
 
 - 主域名完全不同,则 cookie 无法共享
 - 可使用 SSO 技术方案
+
+## prefetch 和 dns-prefetch 有什么区别
+
+**preload 和 preftech**
+
+- preload 资源在在当前页面使用,会**优先**加载
+- prefetch 资源在未来页面使用,**空闲时**加载
+
+**dns-prefetch 和 preconnet**
+
+- dns-prefetch 即 DNS 预查询
+- preconnet 即 DNS 预连接
+
+## 如何实现多网页多标签 tab 通信
+
+**使用 WebSocket**
+
+- 无跨域限制
+- 需要服务端支持,成本高
+
+**通过 localStorage(跨域不同享) 通讯**
+
+- **同域**的 A 和 B 两个页面
+- A 页面设置 localStorage
+- B 页面可监听到 localStorage 值得修改
+
+**通过 SharedWorker(IE11 不支持) 通讯**
+
+- SharedWorker 是 WebWorker 的一种
+- WebWorker 可开启**子进程**执行 JS,但是不能操作 DOM
+- SharedWorker 可单独开启一个进程,用于**同域**页面通讯
+
+**网页和 iframe 如何通讯**
+
+- 使用 postMessage 通讯
+- 注意跨域的限制和判断
