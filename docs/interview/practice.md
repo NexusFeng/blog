@@ -590,3 +590,184 @@ vue-router 三种模式
 
 - 使用 postMessage 通讯
 - 注意跨域的限制和判断
+
+## 后端一次性返回 10w 条数据,该怎么渲染
+
+- 后端返回 10w 条数据,本身技术方案设计就不合理
+- 沟通
+
+- js 处理没问题,渲染到 DOM 会非常卡顿
+
+- 自定义 node 中间层,获取并拆分这 10w 条数据
+- 虚拟列表
+
+## 前端常用的设计模式以及使用场景
+
+**设计原则**
+
+- 最重要的思想: 开放封闭原则
+- 对扩展开放
+- 对修改封闭
+
+**工厂模式**
+
+- 用一个工厂函数,来创建实例,隐藏 new
+- 例：jQuery `$`函数,React crateElement 函数
+
+```js
+class Foo {}
+
+// 工厂模式
+function factory(a, b, c) {
+  return new Foo()
+}
+
+const f1 = factory(1, 2, 3)
+const f2 = factory(1, 2, 3)
+const f3 = factory(1, 2, 3)
+```
+
+**单例模式**
+
+- 全局唯一的实例(无法生成第二个)
+- 如 Vuex Redux 的 store
+- 如全局唯一的 dialog modal
+- js 是单线程,创建单例很简单,java 是多线程,创建单例要考虑锁死线程,否则多个线程同时创建,单例就重复了
+
+```ts
+class SingTon {
+  private static instance: SingleTon | null = null
+  private constructor() {}
+  public static getInstance(): SingTon {
+    if (this.instance == null) {
+      this.instance = new SingleTon()
+    }
+    return this.instance
+  }
+  fn1() {}
+  fn2() {}
+}
+
+const s = new SingleTon() // 报错
+const s = SingleTon.getInstance()
+s.fn1()
+s.fn2()
+
+const s1 = SingleTon.getInstance()
+
+s === s1 //true
+```
+
+**代理模式**
+
+- 使用者不能直接访问对象,而是访问一个代理层
+- 在代理层可以监听 get set 做很多事情
+- 如 ES6 Proxy 实现 Vue3 响应式
+
+**观察者模式**
+
+- 一个主题,一个观察者,主题变化之后触发观察者执行
+
+```js
+btn.addEventListener('click', () => {...})
+```
+
+**发布订阅**
+
+```js
+// 绑定
+event.on('event-key', () => {
+  // 事件1
+})
+event.on('event-key', () => {
+  // 事件2
+})
+
+// 触发执行
+event.emit('event-key')
+```
+
+**装饰器模式**
+
+- 原功能不变,增加一些新功能(AOP 面向切面编程)
+- ES 和 Typescript 的 Decorator 语法
+- 类装饰器,方法装饰器
+
+**观察者模式和发布订阅模式的区别**
+
+- 观察者模式 Subject 和 Observer 直接绑定,没有中间媒介,如 addEventListener 绑定事件
+- 发布订阅模式 Publisher 和 Observer 互不相识,需要中间媒介 Event channel,如 EventBus 自定义事件
+
+**对 vue 项目做过那些优化**
+
+- v-if 和 v-show
+- 使用 computed 缓存数据
+- keep-alive 缓存组件
+- 异步组件,路由懒加载(拆包,需要时异步加载)
+- 服务端 SSR
+- 异步加载组件
+
+**vue 遇到的坑**
+**内存泄漏**
+
+- 全局变量,全局事件,全局定时器,自定义事件
+
+**Vue2 响应式的缺陷**
+
+- data 新增属性用 Vue.set
+- data 删除属性用 Vue.delete
+- 无法直接修改数据 arr[index] = value
+
+**路由切换时 scroll 到顶部**
+
+- SPA 通病,不仅仅是 Vue
+- 如,列表页,滚动到第二屏,点击进入详情页,再返回到列表页(此时组件重新渲染),就 scroll 到顶部
+
+**解决方案**
+
+- 在列表页缓存数据和 scrollTop 值
+- 当再次返回列表页时,渲染组件,执行 scrollTop(xx)
+- 终极解决方案: MPA + App WebView
+
+## 如何统一监听 Vue 组件报错
+
+**window.onerror**
+
+- 全局监听所有 js 错误
+- 但是 js 级别的,识别不了 vue 组件信息
+- 捕捉一些 vue 监听不到的错误
+
+```js
+// App.vue
+mounted() {
+  window.onerror = function(msg, source, line, column, error){
+
+  }
+}
+```
+
+**vue 整个错误监听机制对异步报错监听不了**\
+**errorCaptured**
+
+- 监听所有**下级**组件的错误
+- 返回 false 会阻止向上传播
+
+```js
+// App.vue
+errorCaptured: (err, vm, info) {
+  return false
+}
+```
+
+**errorHandler**
+
+- Vue 全局错误监听,所有组件错误都会汇总到这里
+- 但是 errorCaptured 返回 false,不会传播到这里
+
+```js
+// main.js(vue3)
+const app = createApp(App)
+
+app.config.errorHandler = (error, vm, info) => {}
+app.use(router).mount('#app')
+```
