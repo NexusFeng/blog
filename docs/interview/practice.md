@@ -495,6 +495,7 @@ vue-router 三种模式
 - HTTP 无状态,每次请求都要带 cookie,以帮助识别身份
 - 服务端也可以向客户端 set-cookie,cookie 大小限制 4kb
 - 默认有跨域限制: 不可跨域共享、传递 cookie
+  ![cookie](/docs/images/interview/cookie.jpg)
 
 **cookie 和 session**
 
