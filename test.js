@@ -41,3 +41,13 @@ console.log('obj', obj);
 let obj1 = { city: 's' };
 changeArg(obj1);
 console.log('obj1', obj1);
+
+let arr = [4, 2, 1, 3];
+for (let i = 0; i < arr.length - 1; i++) {
+  if (arr[i] > arr[i + 1]) {
+    let tmp = arr[i];
+    arr[i] = arr[i + 1];
+    arr[i + 1] = tmp;
+  }
+}
+console.log(arr);
