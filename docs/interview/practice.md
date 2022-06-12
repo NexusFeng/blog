@@ -7,20 +7,20 @@
 
 ```js
 function ajax1(url, successFn) {
-  const xhr = new XMLHttpRequest()
-  xhr.open('GET', url, false)
-  xhr.onreadystatechange = function() {
+  const xhr = new XMLHttpRequest();
+  xhr.open('GET', url, false);
+  xhr.onreadystatechange = function () {
     if (xhr.readyState == 4) {
       if (xhr.status == 20) {
-        successFn(xhr.responseText)
+        successFn(xhr.responseText);
       }
     }
-  }
-  xhr.send(null)
+  };
+  xhr.send(null);
 }
 
 function ajax2(url) {
-  return fetch(url).then((res) => res.json())
+  return fetch(url).then((res) => res.json());
 }
 ```
 
@@ -32,16 +32,16 @@ function ajax2(url) {
 
 ```js
 function debounce(fn, delay) {
-  let timer = 0
-  return function() {
+  let timer = 0;
+  return function () {
     if (timer) {
-      clearTimeout(timer)
+      clearTimeout(timer);
     }
     timer = setTimeout(() => {
-      fn.apply(this, arguments)
-      timer = 0
-    }, delay)
-  }
+      fn.apply(this, arguments);
+      timer = 0;
+    }, delay);
+  };
 }
 ```
 
@@ -49,15 +49,15 @@ function debounce(fn, delay) {
 
 ```js
 function throttle(fn, delay) {
-  let timer = 0
-  return function() {
-    if (timer) return
+  let timer = 0;
+  return function () {
+    if (timer) return;
 
     timer = setTimeout(() => {
-      fn.apply(this, arguments)
-      timer = 0
-    }, delay)
-  }
+      fn.apply(this, arguments);
+      timer = 0;
+    }, delay);
+  };
 }
 ```
 
@@ -80,7 +80,7 @@ function throttle(fn, delay) {
 - 某些箭头函数代码难以阅读
 
 ```js
-const fn3 = (a, b) => (b === undefined ? (b) => a * b : a * b)
+const fn3 = (a, b) => (b === undefined ? (b) => a * b : a * b);
 ```
 
 什么时候不能使用箭头函数:
@@ -91,10 +91,10 @@ const fn3 = (a, b) => (b === undefined ? (b) => a * b : a * b)
 const obj = {
   name: 'feng',
   getName: () => {
-    return this.name
+    return this.name;
   },
-}
-console.log(obj.getName()) // undefined
+};
+console.log(obj.getName()); // undefined
 ```
 
 - 原型方法
@@ -102,30 +102,30 @@ console.log(obj.getName()) // undefined
 ```js
 const obj = {
   name: 'feng',
-}
+};
 obj.__proto__.getName = () => {
-  return this.name
-}
-console.log(obj.getName()) // undefined
+  return this.name;
+};
+console.log(obj.getName()); // undefined
 ```
 
 - 构造函数
 
 ```js
 const Foo = (name, age) => {
-  this.name = name
-  this.age = age
-}
-const f = new Foo('feng', 18) // Error: Foo is not a constructor
+  this.name = name;
+  this.age = age;
+};
+const f = new Foo('feng', 18); // Error: Foo is not a constructor
 ```
 
 - 动态上下文中的回调函数
 
 ```js
-const btn1 = document.getElementById('btn1')
+const btn1 = document.getElementById('btn1');
 btn1.addEventListener('click', () => {
-  this.innerHtml = 'clicked' // this 此时是window
-})
+  this.innerHtml = 'clicked'; // this 此时是window
+});
 ```
 
 - vue 生命周期和 methods
@@ -133,8 +133,8 @@ btn1.addEventListener('click', () => {
 
 ```js
 mounted: () => {
-  console.log('msg', this.msg) // Error: Cannot read properties of undefined(reading 'name')
-}
+  console.log('msg', this.msg); // Error: Cannot read properties of undefined(reading 'name')
+};
 ```
 
 **React 组件(非 hooks)本质上是一个 ES6 class**
@@ -142,15 +142,15 @@ mounted: () => {
 ```js
 class Foo {
   constructor(name, city) {
-    this.name = name
-    this.city = city
+    this.name = name;
+    this.city = city;
   }
   getName = () => {
-    return this.name
-  }
+    return this.name;
+  };
 }
-const f = new Foo('feng', 'nexus')
-console.log(f.getName()) // feng
+const f = new Foo('feng', 'nexus');
+console.log(f.getName()); // feng
 ```
 
 ## 请描述 TCP 三次握手和四次挥手
@@ -193,25 +193,25 @@ console.log(f.getName()) // feng
 function createPromise(val) {
   return new Promise((resolve) => {
     setTimeout(() => {
-      resolve(val)
-    }, 1000)
-  })
+      resolve(val);
+    }, 1000);
+  });
 }
 
-const p1 = createPromise(100)
-const p2 = createPromise(200)
-const p3 = createPromise(300)
+const p1 = createPromise(100);
+const p2 = createPromise(200);
+const p3 = createPromise(300);
 
-const list = [p1, p2, p3]
+const list = [p1, p2, p3];
 // Promise.all(list).then((res) => console.log(res))
 for await (let res of list) {
-  console.log(res)
+  console.log(res);
 }
 
-const arr = [10, 20, 30]
+const arr = [10, 20, 30];
 for (let num of arr) {
-  const res = await createPromise(num)
-  console.log(res) // 一秒一秒输出数字
+  const res = await createPromise(num);
+  console.log(res); // 一秒一秒输出数字
 }
 ```
 
@@ -248,15 +248,15 @@ for (let num of arr) {
 
 ```js
 // vue2new vue即可,vue3得引入第三方库
-let bus = new vue()
+let bus = new vue();
 
 // 接收
-bus.on('add', this.add)
+bus.on('add', this.add);
 //关闭
-bus.off('add', this.add)
+bus.off('add', this.add);
 
 // 发送
-bus.emit('add', 'hello')
+bus.emit('add', 'hello');
 ```
 
 - `$attrs $listeners`,vue3 移除了`$listeners`
@@ -314,13 +314,13 @@ window.onSuccess = function(data){
 
 ```js
 // CORS配置允许跨域(服务端)
-response.setHeader('Access-Control-Allow-Origin', 'http://localhost:8081') //或者"*"
-response.setHeader('Access-Control-Allow-Headers', 'X-Requested-with')
+response.setHeader('Access-Control-Allow-Origin', 'http://localhost:8081'); //或者"*"
+response.setHeader('Access-Control-Allow-Headers', 'X-Requested-with');
 response.setHeader(
   'Access-Control-Allow-Methods',
-  'PUT,POST,GET,DELETE,OPTIONS'
-)
-response.setHeader('Access-Control-Allow-Credentials', 'true') //允许跨域接收cookie
+  'PUT,POST,GET,DELETE,OPTIONS',
+);
+response.setHeader('Access-Control-Allow-Credentials', 'true'); //允许跨域接收cookie
 ```
 
 token 需要手动加,cookie 浏览器会自带,
@@ -377,20 +377,20 @@ performance，memory 一直在上升,锯齿状最佳
 - **process.nextTick 优先级最高**
 
 ```js
-console.info('start')
+console.info('start');
 setImmediate(() => {
-  console.info('setImmediate')
-})
+  console.info('setImmediate');
+});
 setTimeout(() => {
-  console.info(timeout)
-})
+  console.info(timeout);
+});
 Promise.resolve().then(() => {
-  console.info('promise then')
-})
+  console.info('promise then');
+});
 process.nextTick(() => {
-  console.info('nextTick')
-})
-console.info('end')
+  console.info('nextTick');
+});
+console.info('end');
 // start
 // end
 // nextTick
@@ -412,23 +412,23 @@ console.info('end')
 - 函数需要独立作用域,会有额外的开销
 
 ```js
-const arr = []
+const arr = [];
 for (let i = 0; i < 100 * 10000; i++) {
-  arr.push(i)
+  arr.push(i);
 }
-const length = arr.length
+const length = arr.length;
 
-console.time('for')
-let n1 = 0
+console.time('for');
+let n1 = 0;
 for (let i = 0; i < length; i++) {
-  n1++
+  n1++;
 }
-console.timeEnd('for') //3.7ms
+console.timeEnd('for'); //3.7ms
 
-console.time('forEach')
-let n2 = 0
-arr.forEach(() => n2++)
-console.timeEnd('forEach') // 15.1ms
+console.time('forEach');
+let n2 = 0;
+arr.forEach(() => n2++);
+console.timeEnd('forEach'); // 15.1ms
 ```
 
 ## 描述 js-bridge 的实现原理
@@ -620,12 +620,12 @@ class Foo {}
 
 // 工厂模式
 function factory(a, b, c) {
-  return new Foo()
+  return new Foo();
 }
 
-const f1 = factory(1, 2, 3)
-const f2 = factory(1, 2, 3)
-const f3 = factory(1, 2, 3)
+const f1 = factory(1, 2, 3);
+const f2 = factory(1, 2, 3);
+const f3 = factory(1, 2, 3);
 ```
 
 **单例模式**
@@ -637,26 +637,26 @@ const f3 = factory(1, 2, 3)
 
 ```ts
 class SingTon {
-  private static instance: SingleTon | null = null
+  private static instance: SingleTon | null = null;
   private constructor() {}
   public static getInstance(): SingTon {
     if (this.instance == null) {
-      this.instance = new SingleTon()
+      this.instance = new SingleTon();
     }
-    return this.instance
+    return this.instance;
   }
   fn1() {}
   fn2() {}
 }
 
-const s = new SingleTon() // 报错
-const s = SingleTon.getInstance()
-s.fn1()
-s.fn2()
+const s = new SingleTon(); // 报错
+const s = SingleTon.getInstance();
+s.fn1();
+s.fn2();
 
-const s1 = SingleTon.getInstance()
+const s1 = SingleTon.getInstance();
 
-s === s1 //true
+s === s1; //true
 ```
 
 **代理模式**
@@ -679,13 +679,13 @@ btn.addEventListener('click', () => {...})
 // 绑定
 event.on('event-key', () => {
   // 事件1
-})
+});
 event.on('event-key', () => {
   // 事件2
-})
+});
 
 // 触发执行
-event.emit('event-key')
+event.emit('event-key');
 ```
 
 **装饰器模式**
@@ -767,8 +767,32 @@ errorCaptured: (err, vm, info) {
 
 ```js
 // main.js(vue3)
-const app = createApp(App)
+const app = createApp(App);
 
-app.config.errorHandler = (error, vm, info) => {}
-app.use(router).mount('#app')
+app.config.errorHandler = (error, vm, info) => {};
+app.use(router).mount('#app');
+```
+
+## 代码输出
+
+- a.x 比赋值的优先级高
+
+```js
+let a = { n: 1 };
+a.x = a = { n: 2 };
+console.log(a); // {n:2}
+// 可拆解为
+// a.x = undefined
+// let x = a.x x变量假的,实际执行不会有
+// x = a = {n:2}
+```
+
+```js
+let a = { n: 1 };
+let b = a;
+a.x = a = { n: 2 };
+
+console.log(a);
+console.log(b.x);
+// {n:2} {n:1,x:{n:2}}
 ```

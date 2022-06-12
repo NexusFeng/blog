@@ -51,3 +51,72 @@ for (let i = 0; i < arr.length - 1; i++) {
   }
 }
 console.log(arr);
+
+function Foo() {
+  Foo.a = function () {
+    console.log(1);
+  };
+  // this.a = function(){console.log(2)}
+}
+
+Foo.prototype.a = function () {
+  console.log(3);
+};
+Foo.a = function () {
+  console.log(4);
+};
+
+Foo.a();
+let obj12 = new Foo();
+obj12.a();
+Foo.a();
+
+let a = { n: 1 };
+let b = a;
+a.x = a = { n: 2 };
+
+console.log(a);
+console.log(b.x);
+
+Promise.resolve()
+  .then(() => {
+    console.log(0);
+    return Promise.resolve(4);
+  })
+  .then((res) => {
+    console.log(res);
+  })
+  .then(() => {
+    console.log(6);
+  });
+
+Promise.resolve().then(() => {
+  console.log(0);
+});
+
+Promise.resolve()
+  .then(() => {
+    console.log(1);
+  })
+  .then(() => {
+    console.log(2);
+  })
+  .then(() => {
+    console.log(3);
+  })
+  .then(() => {
+    console.log(5);
+  });
+
+Promise.resolve().then(() => {
+  // 交替第一次处理
+  let p = Promise.resolve(4);
+  Promise.resolve().then(() => {
+    // 交替第二次处理
+    p.then((res) => {
+      console.log(res);
+    }).then(() => {
+      console.log(6);
+    });
+  });
+});
