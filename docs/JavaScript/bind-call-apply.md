@@ -4,7 +4,7 @@
 
 - apply 接受两个参数,第一个指定函数体内 this 对象的指向,第二个参数为一个带下标的集合(可为数组也可以为类数组),apply 方法把这个集合中的元素作为参数传递给被调用的函数
 - call 传入的参数数量不固定,第一个参数也是代表函数体内的 this 指向
-- call/apply 第一个参数是 null 或者 undefined,this 就指向全局对象 window
+- call/apply/bind 第一个参数是 null 或者 undefined,this 就指向全局对象 window
 - **提示: 类数组无法使用 forEach、splice、push 等数组原型上的方法**
 
 ## bind 模拟实现

@@ -8,3 +8,66 @@
 - 方法调用模式: 当一个函数作为一个对象的方法调用时,this指向这个对象
 - 构造器调用模式: 当一个函数用new调用时,函数执行前会创建一个新对象,this指向这个新创建的对象
 - bind/apply/call改变this指向
+
+优先级: new绑定 > 显示绑定(apply/call/bind) > 隐式绑定(obj.foo()) > 默认绑定(独立函数调用)  
+**new不能和apply/call同时使用,他们都是调用函数,在用new实例化一个bind的函数时,bind的this会失效,此时this指向new的实例**  
+**apply/call/bind:当传入null/undefined时,自动将this绑定成全局对象**
+- 
+```js
+var obj = {
+  name: 'obj',
+  foo: function() {
+    console.log(this)
+  }
+}
+
+obj.foo() // obj
+
+// call/apply显示绑定优先级高于隐式绑定
+obj.foo.call('abc') // abc
+
+var bar = obj.foo.bind('cba')
+bar() // cba
+
+
+var f = new obj.foo() //f 
+```
+
+## 示例
+```js
+const boxDiv = document.querySelector('.box')
+boxDiv.onclick = function() {
+  console.log(this) // dom元素
+}
+
+//
+let name = ['abc', 'nba', 'cba']
+name.forEach(function(item) => {
+  console.log(this) // window
+})// map 同理，可通过传入第二个参数改变this
+
+var obj1 = {
+  name: 'obj1',
+  foo: function() {
+    console.log(this)
+  }
+}
+
+var obj2 = {
+  name: 'obj2'
+}
+
+obj2.bar = obj1.foo
+obj2.bar()  // obj2
+
+(obj2.bar = obj1.foo)() // undefined
+
+
+function foo(el){
+  console.log(el, this.id)
+}
+var obj = {
+  id: 'awesome'
+} // 此处得加;
+[1,2,3].forEach(foo, obj) // 报错
+```
