@@ -1,7 +1,18 @@
 function foo(el){
-  console.log(el, this.id)
+  console.log(el)
 }
-var obj = {
-  id: 'awesome'
-}; // 此处得加;
-[1,2,3].forEach(foo, obj)
+
+foo.call(123)
+
+
+Function.prototype.myCall = function(thisArg,...args) {
+  var fn = this
+
+  thisArg = thisArg?Object(thisArg):window
+
+  thisArg.fn = fn
+  let result = thisArg.fn(...args)
+
+  delete thisArg
+  return result
+}
