@@ -82,6 +82,25 @@ Function.prototype.myBind = fucntion (context, ...args){
   return result
 }
 ```
+第三版
+```js
+Function.prototype.myBind = function(thisArg, ...argArray) {
+  var fn = this
+  thisArg = (thisArg !== null && thisArg !== undefined) ? Object(thisArg) : window
+
+  function proxyFn(...args){
+    thisArg.fn = fn
+    let result = thisArg.fn()
+
+    let finalArg = [...argArray, ..args]
+    delete thisArg.fn(...finalArg)
+    delete thisArg.fn
+    return result
+  }
+
+  return proxyFn
+}
+```
 
 ## call 模拟实现
 
@@ -126,11 +145,27 @@ Function.prototype.myCall = function(context, ...args) {
 }
 ```
 
+第三版
+```js
+Function.prototype.myCall = function(thisArg,...args) {
+  var fn = this
+  // 对thisArg转成对象类型(防止它传入的是非对象类型)
+  thisArg = thisArg ? Object(thisArg) : window
+
+  thisArg.fn = fn
+  let result = thisArg.fn(...args)
+
+  delete thisArg.fn
+  return result
+}
+```
+
 ## apply 模拟实现
 
 - 调用者必须是函数,只接受两个参数
 - 第二个参数,必须是数组或者类数组
 
+第一版
 ```js
 Function.prototype.myApply = function(context) {
   // 判断对象是否是函数
@@ -152,4 +187,36 @@ Function.prototype.myApply = function(context) {
   delete context.fn
   return result
 }
+```
+第二版
+```js
+Function.prototype.myApply = function(thisArg, argArray){
+ var fn = this
+
+ thisArg = (thisArg !== null && thisArg !== undefined) ? Object(thisArg) : window
+
+ thisArg.fn = fn
+
+ argArray = argArray || []
+ let result = thisArg.fn(...argArray)
+ delete thisArg.fn
+ return result 
+}
+```
+
+## 类数组传数组`Array.prototype.slice.call()`
+
+```js
+Array.prototype.mySlice = function(start, end){
+  let arr = this
+  let newArr = []
+  for(let i = start; i < end; i++) {
+    newArr.push(arr[i])
+  }
+  return newArr
+}
+
+let newArr = Array.prototype.mySlice.call(['aa', 'bb', 'cc'], 1, 2)
+console.log(newArr) // ['bb', 'cc']
+
 ```
