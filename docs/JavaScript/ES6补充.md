@@ -184,7 +184,7 @@ set = new Set(Array.from(set, val => val*2))
 
 ##### Proxy
 用于修改某些操作的默认行为,在访问目标对象之前必须通过拦截  
-语法：`var proxy = new Proxy(target, handler)`
+语法：`var proxy = new Proxy(target, handler[,receiver])`
 - Proxy实例也可以作为其他对象的原型对象
 ```js
 var proxy = new Proxy({}, {
@@ -198,7 +198,7 @@ obj.time // 35
 ```
 Proxy支持的拦截操作
 - `get(target, proKey, receiver)`: 拦截对象属性的读取(参数：目标对象、属性名、proxy实例本身(可选))
-- `set(target, proKey,vaule, reveiver)`: 拦截对象属性的设置,返回一个布尔值(参数：目标对象、属性名、属性值、proxy实例本身(可选))
+- `set(target, proKey,vaule, receiver)`: 拦截对象属性的设置,返回一个布尔值(参数：目标对象、属性名、属性值、proxy实例本身(可选))
 - `has(target, proKey)`: 拦截`proKey in proxy`的操作,返回一个布尔值
 - `deletePropety(target, proKey)`: 拦截`delete proxy[proKey]`操作,返回一个布尔值
 - `ownKeys(target)`: 拦截`Object.getOwnPropertyNames(proxy)、Object.getOwnPropertySymbols(proxy)、Object.keys(proxy)、for...in`循环，返回一个数组。该方法返回**目标对象所有自身的属性的属性名，而Object.keys()的返回结果仅包括目标对象自身的可遍历属性**。 
@@ -208,7 +208,7 @@ Proxy支持的拦截操作
 - `getPrototypeOf(target)`：拦截`Object.getPrototypeOf(proxy)`，返回一个对象。
 - `isExtensible(target)`：拦截`Object.isExtensible(proxy)`，返回一个布尔值。
 - `setPrototypeOf(target, proto)`：拦截`Object.setPrototypeOf(proxy, proto)`，返回一个布尔值。如果目标对象是函数，那么还有两种额外操作可以拦截。
-- `apply(target, object, args)`：拦截 Proxy 实例作为函数调用的操作，比如`proxy(...args)、proxy.call(object, ...args)、proxy.apply(...)`。(参数: 目标对象、目标对象的上下文对象、目标对象的参数数组)
+- `apply(target, object, args)`：拦截 Proxy 实例作为函数调用的操作，比如`proxy(...args)、proxy.call(object, ...args)、proxy.apply(...)`。(参数: 目标对象、目标对象的上下文对象(this)、目标对象的参数数组)
 - `construct(target, args, newTarget)`：拦截 Proxy 实例作为构造函数调用的操作，比如`new proxy(...args)`(参数: 目标对象、构造函数的参数数组、创造实例对象时,new命令作用的构造函数)
 
 ##### Reflect
@@ -235,6 +235,18 @@ for (let key in obj) {
 }
 console.log('a' in obj, 'x' in obj)
 console.log(Reflect.has(obj, 'a'), Reflect.has(obj, 'x'))
+
+// Reflect.construct() 
+function Student(name, age) {
+  this.name = name
+  this.age = age
+}
+function Teacher() {
+}
+const stu = new Student()
+// 执行Student函数中的内容,但是创建出来对象是Teacher对象
+const teacher = Reflect.construct(Student, ['feng', 18, Teacher])
+console.log(teacher.__proto__ === Teacher.prototype) // true
 ```
 ##### Iterator(遍历器)
 为各种不同的数据结构提供统一的访问机制,任何数据结构只要部署Iterator接口,就可以完成便利操作.  
