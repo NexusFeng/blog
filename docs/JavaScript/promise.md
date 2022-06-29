@@ -2,7 +2,7 @@
 
 - 3 种状态: pending(待定状态)、fulfilled(成功状态)、reject(失败状态)
 - 2 个改变过程: pending --> resolve、pending --> reject
-- 1 个 return
+- 1 个 return 返回一个promise
 
 ```js
 const p1 = new Promise((resolve, reject) => {
@@ -15,6 +15,8 @@ const p1 = new Promise((resolve, reject) => {
   .then((resolve, reject) => {
     // 这里的状态和结果由上面的return决定
   });
+
+// then返回的是一个promise,如果是常量会包裹在resolve中返回
 ```
 
 ### 解决的问题
