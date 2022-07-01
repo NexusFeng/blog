@@ -1,11 +1,10 @@
-class A{
-  a(){
-    console.log('a')
+var test = (function() {
+  var num = 0
+  return () => {
+    return num++
   }
+}())
+for(let i = 0; i < 10; i++) {
+  test()
 }
-A.prototype.b = function(){}
-
-let a = new A()
-for(let key in a) {
-  console.log(key)
-}
+console.log(test())
