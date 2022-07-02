@@ -1,10 +1,8 @@
-var test = (function() {
-  var num = 0
-  return () => {
-    return num++
-  }
-}())
-for(let i = 0; i < 10; i++) {
-  test()
+let deep = 1
+var test = function(i){
+  i++
+  console.log(i)
+  deep = i
+  console.log(deep)
 }
-console.log(test())
+console.log(test(1))

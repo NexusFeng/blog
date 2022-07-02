@@ -1,4 +1,4 @@
-## promise结构设计
+## promise结构设计以及api
 ```js
 const PROMISE_STATUS_PENDING = 'pending'
 const PROMISE_STATUS_FULFILLED = 'fulfilled'
@@ -55,49 +55,106 @@ class myPromise {
   }
 
   then(onFulfilled, onRejected){
+    const defaultOnRejected = err => {throw err} 
+    onRejected = onRejected || defaultOnRejected
+
+    const defaultOnFulfilled = err => {throw err} 
+    onRejected = onFulfilled || defaultOnFulfilled
     // 处理链式调用
     return new myPromise((resolve, reject) => {
       // 如果在then调用时候,状态已经确定(例1)
-    if(this.status === PROMISE_STATUS_FULFILLED && onFulfilled) {
-      // try {
-      //   const value = onFulfilled(this.value)
-      //   resolve(value)
-      // }catch(err) {
-      //   reject(err)
-      // }
+    if(this.status === PROMISE_STATUS_FULFILLED) {
       execFunctionWithCatchError(onFulfilled, this.value, resolve, reject)
     }
-    if(this.status === PROMISE_STATUS_REJECTED && onRejected) {
-      // try {
-      //   const reason = onRejected(this.reason)
-      //   // 例2
-      //   resolve(reason)
-      // }catch(err){
-      //   reject(err)
-      // }
+    if(this.status === PROMISE_STATUS_REJECTED ) {
       execFunctionWithCatchError(onRejected, this.value, resolve, reject)
     }
     // 将成功回调和失败的回调放到数组中
     if(this.status === PROMISE_STATUS_PENDING) {
       this.onFulfilledFns.push(() => {
-        // try {
-        //   const value = onFulfilled(this.value)
-        //   resolve(value)
-        // }catch(err) {
-        //   reject(err)
-        // }
         execFunctionWithCatchError(onFulfilled, this.value, resolve, reject)
       })
       this.onRejectedFns.push(() => {
-        // try {
-        //   const reason = onRejected()
-        //   resolve(reason)
-        // } catch (err) {
-        //   reject(err)
-        // }
         execFunctionWithCatchError(onRejected, this.value, resolve, reject)
       })
     }
+    })
+  }
+
+  catch(onRejected) {
+    return this.then(undefined, onRejected)
+  }
+
+  finally(onFinally) {
+    this.then(() => {
+      onFinally()
+    },() => {
+      onFinally()
+    })
+  }
+
+  static resolve(value){
+    return new myPromise((resolve) => resolve(value))
+  }
+
+  static reject(reason){
+    return new myPromise((resolve,reject) => reject(reason))
+  }
+
+  static all(promises){
+    return new myPromise((resolve, reject) => {
+      const values = []
+      promises.forEach(promise => {
+        promise.then(res => {
+          values.push(res)
+          if(values.length === promises.length) {
+            resolve(values)
+          }
+        },err => {
+          reject(err)
+        })
+      })
+    })
+  }
+
+  static allSettled(promises){
+    return new myPromise(resolve => {
+      const results = []
+      promises.forEach(promise => {
+        results.push({ status: PROMISE_STATUS_FULFILLED, value: res })
+        if(results.length === promises.length) {
+          resolve(values)
+        }
+      }, err => {
+        results.push({ status: PROMISE_STATUS_REJECTED, value: err })
+        if(results.length === promises.length) {
+          resolve(values)
+        }
+      })
+    })
+  }
+
+  static race(promises) {
+    return new myPromise((resolve, reject) => {
+      promises.forEach(promise => {
+        promise.then(resolve, reject)
+      })
+    })
+  }
+
+  static any(promises) {
+    // resolve 必须等到一个有成功的结果
+    // reject所有的都失败才执行reject
+    const reasons = []
+    return new myPromise((resolve, reject) => {
+      promises.forEach(promise => {
+        promise.then(resolve, err => {
+          reasons.push(err)
+          if(reasons.length === promises.length) {
+            reject(new AggregatError(reasons))
+          }
+        })
+      })
     })
   }
 }
