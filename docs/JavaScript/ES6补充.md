@@ -248,14 +248,15 @@ const stu = new Student()
 const teacher = Reflect.construct(Student, ['feng', 18, Teacher])
 console.log(teacher.__proto__ === Teacher.prototype) // true
 ```
-##### Iterator(遍历器)
+##### Iterator(迭代器)(迭代器是帮助我们对某个数据结构进行遍历的对象)
+实现可迭代协议的对象: String、Array、Map、Set、arguments对象、NodeList对象
 为各种不同的数据结构提供统一的访问机制,任何数据结构只要部署Iterator接口,就可以完成便利操作.  
 主要作用：
 - 为各种数据结构提供一个统一的、简便的访问接口
 - 使得数据结构的成员能够按某种次序排序
 - 主要供`for...of`消费
 
-默认的Iterator接口部署在数据结构的Symbol.iterator(函数,预定义好的、类型为Symbol的特殊值)属性,即一个数据结构只要具有Symbol.iterator属性,就可以认为是可遍历的  
+默认的Iterator接口部署在数据结构的Symbol.iterator(函数,预定义好的、类型为Symbol的特殊值)属性,即一个数据结构只要具有Symbol.iterator属性,就可以认为是**可遍历的**  
 原生具备Iterator接口的数据结构：
 - Array
 - Map
