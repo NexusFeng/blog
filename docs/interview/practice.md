@@ -446,9 +446,10 @@ console.timeEnd('forEach'); // 15.1ms
 
 ## RAF 和 RIC 区别
 
-- requestAnimationFrame 每次渲染完都会执行,**高优**
+- requestAnimationFrame 每一帧都会执行,**高优**,在布局之前执行
+![](/docs/images//interview/%E6%B8%B2%E6%9F%93%E6%B5%81%E7%A8%8B.jpg)
 - requestIdleCallback 空闲时才执行,**低优**
-- **两者都是宏任务,因为都要等 DOM 渲染完才执行,肯定是宏任务**
+- **RAF任务队列被执行时,会将此刻队列中所有任务都执行完,所以RAF任务不属于宏任务也不属于微任务**
 
 ## vue 什么时候操作 DOM 比较合适
 
