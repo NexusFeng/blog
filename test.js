@@ -1,26 +1,28 @@
-var findRotation = function(mat, target) {
-  let n = mat.length
-  const rotate = grid => {
-    for(let i = 0; i < n; i++) {
-      for(let j = 0; j < i; j++) {
-        [grid[i][j], grid[j][i]] = [grid[j][i], grid[i][j]]
-      }
-    }
-    for(let i = 0; i < n; i++) {
-      for(let j = 0; j < n/2; j++) {
-        [grid[i][j], grid[i][n - j - 1]] = [grid[i][n - j - 1], grid[i][j]]
-      }
-    }
+var nextGreaterElement = function(n) {
+  const nums = [...('' + n)]
+  let i = nums.length - 2
+  while(i >= 0 && nums[i] >= nums[i + 1]){
+    i--
   }
-  return [0,0,0,0].some(() => {
-    rotate(mat)
-    for(let i = 0; i < n; i++) {
-      for(let j = 0; j < n; j++) {
-        if(mat[i][j] !== target[i][j]) return false
-      }
-    }
-    return true
-  })
- };
-let mat = [[0,0,0],[0,1,0],[1,1,1]], target = [[1,1,1],[0,1,0],[0,0,0]]
-findRotation(mat, target)
+  if(i < 0) {
+    return -1
+  }
+
+  let j = nums.length - 1
+  while(j >= 0 && nums[i] >= nums[j]){
+    j--
+  }
+  [nums[i], nums[j]] = [nums[j], nums[i]]
+  reverse(nums, i + 1)
+  const ans = 0 + nums.join('')
+  return ans > MAX? -1: ans
+};
+const reverse = (nums, begin) => {
+  let i = begin, j = nums.length - 1
+  while(i < j){
+    [nums[i], nums[j]] = [nums[j], nums[i]]
+    i++
+    j--
+  }
+}
+nextGreaterElement(12443322)
