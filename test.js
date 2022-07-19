@@ -1,6 +1,14 @@
-let arr = [1,2,3,4,5,6,7]
-for(let i = 0; i < arr.length; i++) {
-  if(arr[i] % 2 ==0) {
-    arr.splice(i, 1)
+var numSubarrayProductLessThanK = function(nums, k) {
+  let n = nums.length, ret = 0
+  let prod = 1, i = 0
+  for(let j = 0; j < n; j++) {
+    prod *= nums[j]
+    while(i <= j && prod >= k){
+      prod /= nums[i]
+      i++
+    }
+    ret += j - i + 1
   }
-}
+  return ret
+};
+numSubarrayProductLessThanK([1,2,3], 0)
