@@ -1,3 +1,4 @@
+# 3.关于this
 ### 事件绑定
 - 不论DOM0还是DOM2级事件绑定,给元素el的某个时间绑定行为,当事件触发时,方法中的this指向元素el
 (特殊情况: IE6-IE8中,基于attachEvent绑定的事件,this指向window,call/apply/bind强制改变了函数中的this的指向)
@@ -12,7 +13,6 @@
 优先级: new绑定 > 显示绑定(apply/call/bind) > 隐式绑定(obj.foo()) > 默认绑定(独立函数调用)  
 **new不能和apply/call同时使用,他们都是调用函数,在用new实例化一个bind的函数时,bind的this会失效,此时this指向new的实例**  
 **apply/call/bind:当传入null/undefined时,自动将this绑定成全局对象**
-- 
 ```js
 var obj = {
   name: 'obj',

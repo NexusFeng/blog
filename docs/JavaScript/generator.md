@@ -1,3 +1,4 @@
+# 7.Generator生成器
 生成器对象是由一个FeneratorFunction返回的,并且它符合迭代器协议和可迭代协议  
 普通函数vs生成器函数
 - 普通函数是Function的实例,普通函数实例.proto__ === Function.prototype
@@ -6,7 +7,7 @@
 
 ### **生成器函数的实例不是通过new,而是执行生成器函数,此时生成器函数的函数体并未执行**
 ```js
-function* fn(){}
+function *fn(){}
 // 生成器函数的实例不是通过new,而是执行生成器函数,此时生成器函数的函数体并未执行
 let itor = fn()
 console.log(Object.prototype.toString.call(fn)) // [object GeneratorFunction]

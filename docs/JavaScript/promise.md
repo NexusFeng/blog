@@ -1,3 +1,4 @@
+# 11.Promise
 核心内容(321):
 
 - 3 种状态: pending(待定状态)、fulfilled(成功状态)、reject(失败状态)
