@@ -1,11 +1,14 @@
-# 7.Generator生成器
+---
+title: 7.Generator生成器
+---
+## 定义
 生成器对象是由一个FeneratorFunction返回的,并且它符合迭代器协议和可迭代协议  
 普通函数vs生成器函数
 - 普通函数是Function的实例,普通函数实例.proto__ === Function.prototype
 - 生成器函数GeneratorFunction的实例,生成器函数实例.proto__ === GeneratorFunction.prototype, GeneratorFunction.prototype.__proto__ ===Function.prototype
 - 生成器函数[[IsGenerator]]: true
 
-### **生成器函数的实例不是通过new,而是执行生成器函数,此时生成器函数的函数体并未执行**
+## **生成器函数的实例不是通过new,而是执行生成器函数,此时生成器函数的函数体并未执行**
 ```js
 function *fn(){}
 // 生成器函数的实例不是通过new,而是执行生成器函数,此时生成器函数的函数体并未执行
@@ -49,7 +52,7 @@ async/await VS promise:
 - next 传值：下一次 next 传值给上一次 yield 执行的返回值(第一个next不给任何人传值)
 - **注意，由于next方法的参数表示上一个yield表达式的返回值，所以在第一次使用next方法时，传递参数是无效的。V8 引擎直接忽略第一次使用next方法时的参数，只有从第二次使用next方法开始，参数才是有效的。从语义上讲，第一个next方法用来启动遍历器对象，所以不用带有参数。**
 
-### **生成器函数如果有 return 语句，return 语句后面的 yiled 还是能执行，其他的代码不会执行**
+## **生成器函数如果有 return 语句，return 语句后面的 yiled 还是能执行，其他的代码不会执行**
 ```js
 function * gen () {
   console.log('1')

@@ -1,4 +1,6 @@
-# 12.promise简易实现
+---
+title: 12.promise简易实现
+---
 ## promise结构实现以及相关api
 ```js
 const PROMISE_STATUS_PENDING = 'pending'

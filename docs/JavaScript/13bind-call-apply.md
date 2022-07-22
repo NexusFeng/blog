@@ -1,4 +1,6 @@
-# 关于bind/call/apply
+---
+title: 13.关于bind/call/apply
+---
 ## bind/call/apply 区别
 
 它们的作用是一样的,区别在于传入的参数形式的不同

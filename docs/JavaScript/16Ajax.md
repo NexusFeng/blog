@@ -1,4 +1,7 @@
-# Ajax
+---
+title: 16.Ajax
+--- 
+## 前置
 - XMLHttpRequest是由浏览器的其他进程或发起请求,然后再将执行结果利用IPC(进程间通信)的方式通知渲染进程,之后渲染进程再将对应的消息添加到消息队列中
 ```js
 // get请求
@@ -30,7 +33,7 @@ const postData = {
 }
 xhr.send(JSON.stringify(postData))
 ```
-#### 简易Ajax
+## 简易Ajax
 ```js
 function ajax(url) {
   const p = new Promise((resolve, reject) => {

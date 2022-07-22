@@ -1,5 +1,7 @@
-# 11.Promise
-核心内容(321):
+---
+title: 11.Promise
+---
+## 核心内容(321):
 
 - 3 种状态: pending(待定状态)、fulfilled(成功状态)、reject(失败状态)
 - 2 个改变过程: pending --> resolve、pending --> reject
@@ -20,7 +22,7 @@ const p1 = new Promise((resolve, reject) => {
 // then返回的是一个promise,如果是常量会包裹在resolve中返回
 ```
 
-### 解决的问题
+## 解决的问题
 
 - 回调地狱,代码难以维护
 
@@ -45,7 +47,7 @@ sayhello('first', function () {
   回调函数不能保证什么时候去调用回调，以及使用什么方式去调用回调；而 Promise 一旦被确认成功或失败，就不能再被更改。
   Promise 成功之后仅调用一次 resolve()，不会产生回调多次执行的问题。除非 Promise 再次调用。所以 Promise 很好地解决了第三方工具导致的回调多次执行（控制反转）的问题。
 
-### 注意的问题
+## 注意的问题
 
 - **并行 promise 的 then 会交替执行,编译器的优化,防止一个 promise 占据太久时间**
 - **then 中返回 promise 实例,相当于多出了一个 promise 实例,也会遵循交替执行,但是和直接声明一个 promise 实例结果有些差异**
@@ -169,7 +171,7 @@ promise
 // ok
 ```
 
-#### Promise.prototype.finally()(ES2018)
+### Promise.prototype.finally()(ES2018)
 
 无论 Promise 对象最后状态如何都会执行操作  
 finally 本质上是**then 方法的特例**  
@@ -198,7 +200,7 @@ Promise.resolve('2')
 // finally2后面的then函数 2
 ```
 
-#### Promise.all()
+### Promise.all()
 
 Promise.all()方法用于将多个 Promise 实例，包装成一个新的 Promise 实例。
 
