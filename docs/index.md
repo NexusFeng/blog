@@ -6,16 +6,28 @@ hero:
     - text: Getting Started
       link: /getting-started
 features:
-  - icon: https://gw.alipayobjects.com/zos/bmw-prod/881dc458-f20b-407b-947a-95104b5ec82b/k79dm8ih_w144_h144.png
-    title: Feature 1
+  - icon: /html.svg
+    title: html
     desc: Balabala
-  - icon: https://gw.alipayobjects.com/zos/bmw-prod/d60657df-0822-4631-9d7c-e7a869c2f21c/k79dmz3q_w126_h126.png
-    title: Feature 2
+  - icon: /css.svg
+    title: css
     desc: Balabala
-  - icon: https://gw.alipayobjects.com/zos/bmw-prod/d1ee0c6f-5aed-4a45-a507-339a4bfe076c/k7bjsocq_w144_h144.png
-    title: Feature 3
+  - icon: /js.svg
+    title: JavaScript
     desc: Balabala
-footer: Open-source MIT Licensed | Copyright © 2020<br />Powered by [dumi](https://d.umijs.org)
+  - icon: /ts.svg
+    title: TypeScript
+    desc: Balabala
+  - icon: /vue.svg
+    title: vue
+    desc: Balabala
+  - icon: /vite.svg
+    title: vite
+    desc: Balabala
+  - icon: /webpack.svg
+    title: webpack
+    desc: Balabala
+footer: It was started in August 2020<br />Powered by [NexusFeng](https://github.com/NexusFeng)
 ---
 
 <!-- ## Hello dumi! -->
