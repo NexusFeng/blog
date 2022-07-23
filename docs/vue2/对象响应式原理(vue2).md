@@ -1,3 +1,4 @@
+
 ```js
 // 保存当前需要收集的全局函数
 let activeReactiveFn = null

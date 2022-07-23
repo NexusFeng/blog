@@ -3,30 +3,30 @@ hero:
   title: NexusFeng's technology blog
   desc: A ship in harbor is safe, but that is not what ships are built for.
   actions:
-    - text: Getting Started
-      link: /getting-started
+    - text: Quick Start
+      link: /java-script
 features:
   - icon: /html.svg
     title: html
-    desc: Balabala
+    desc: 超文本标记语言
   - icon: /css.svg
     title: css
-    desc: Balabala
+    desc: 层叠样式表
   - icon: /js.svg
     title: JavaScript
-    desc: Balabala
+    desc: 一种具有函数优先的轻量级，解释型或即时编译型的编程语言
   - icon: /ts.svg
     title: TypeScript
-    desc: Balabala
+    desc: JavaScript的一个超集,支持ES6 
   - icon: /vue.svg
     title: vue
-    desc: Balabala
+    desc: 渐进式JavaScript 框架
   - icon: /vite.svg
     title: vite
-    desc: Balabala
+    desc: 下一代前端开发与构建工具
   - icon: /webpack.svg
     title: webpack
-    desc: Balabala
+    desc: 一个用于现代 JavaScript 应用程序的静态模块打包工具
 footer: It was started in August 2020<br />Powered by [NexusFeng](https://github.com/NexusFeng)
 ---
 
