@@ -1,10 +1,11 @@
-
+---
+title: 1.基础
+---
 ## setUp参数
 - setUp内部避免使用this
 - props:父组件传递的属性
 - context: 上下文对象,包含三个属性:attrs、slots、emit
 
-## Reactive判断的API
 ## isProxy
 检查对象是否是由reactive或者readonly创建的proxy
 ## isReactive

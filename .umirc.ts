@@ -12,7 +12,7 @@ export default defineConfig({
         "title": "基础技能▾",
         "children":[
           {"title": "JavaScript","order": 1, "path": "/java-script"},
-          {"title": "TypeScript", "path": "/ts"},
+          {"title": "TypeScript", "path": "/type-script"},
           {"title": "CSS", "path": "/css"}
         ]
       },
@@ -45,14 +45,14 @@ export default defineConfig({
       {
         "title": "Interview▾",
         "children": [
-          {"title": "手写", "path": "/handwritten"},
+          {"title": "原理手写", "path": "/handwritten"},
           {"title": "问答", "path": "/interview"},
-          {"title": "知识点积累", "path": "/every-day-knowledge"}
+          // {"title": "小知识点积累", "path": "/every-day-knowledge"}
         ]
       },
       {
         "title": "GitHub",
-        "path": "https://github.com/NexusFeng"
+        "path": "https://github.com/NexusFeng/blog"
       }
     ]
   }
