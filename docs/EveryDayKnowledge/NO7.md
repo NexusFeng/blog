@@ -21,7 +21,7 @@ HTTP:直接通过明文在浏览器和服务器之间传递信息
 HTTPS:采用对称加密和非对称加密结合的方式来保护浏览器和服务器之间的通信安全  
 对称加密算法数据 + 非对称加密算法交换秘钥 + 数字证书验证身份 = 安全  
 加密过程:  
-![https加密过程](./../images/EveryDayKnowledge/https.png)  
+![https加密过程](../../public/images/EveryDayKnowledge/https.png)  
 相关资料:<https://www.jianshu.com/p/e30a8c4fa329>
 ## 3、http3有那些改变？
 http3基于UDP协议实现了类似TCP的多路复用数据流、传输可靠性等功能,被称为QUIC协议  
