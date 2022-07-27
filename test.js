@@ -6,4 +6,10 @@ Object.defineProperty(obj, 'a',{
     return a
   }
 })
+Object.defineProperty(obj, 'a',{
+  get(){
+    console.log(222)
+    return a
+  }
+})
 console.log(obj.a)
