@@ -1,9 +1,6 @@
-let obj = {a:1, b:2}
-let a = 22
-Object.defineProperty(obj, 'b',{
-  get(){
-    console.log(333)
-    return a
-  }
-})
-console.log(obj.b)
+let map = new Map()
+map.set('a',1)
+map.set('b',-1)
+for(let item of map) {
+  console.log(item[1])
+}
