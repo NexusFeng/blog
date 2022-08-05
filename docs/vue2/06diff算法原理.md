@@ -43,7 +43,8 @@ export function createPatchFunction (backend) {
 ```
 
 ### 前后虚拟节点不一致
-分为三个步骤: 1.创建新的节点、2.更新父占位符节点、3.删除旧节点
+分为三个步骤: 1.创建新的节点、2.更新父占位符节点、3.删除旧节点  
+初次进行挂载组件时会判断如果是真实dom,就会将其转为虚拟节点并替换掉
 ```js
 if (isRealElement) {
   ...
@@ -86,4 +87,55 @@ if (isDef(parentElm)) {
 } else if (isDef(oldVnode.tag)) {
   invokeDestroyHook(oldVnode)
 }
+```
+### 前后虚拟节点一致
+- 首先判断新节点是否为文本,是则直接设置文本,不是则继续判断
+- 新、旧节点都有children,深度对比(重点)
+- 新节点有children,老节点没有,循环添加新节点
+- 新节点没有,老节点有children,直接删除老节点
+```js
+function patchVnode (oldVnode,vnode,insertedVnodeQueue,ownerArray,index,removeOnly) {
+    const elm = vnode.elm = oldVnode.elm
+
+    let i
+    const data = vnode.data 
+    // 是组件vnode,在组件更新会调用组件的prepatch方法
+    if (isDef(data) && isDef(i = data.hook) && isDef(i = i.prepatch)) {
+      i(oldVnode, vnode)
+    }
+
+    const oldCh = oldVnode.children
+    const ch = vnode.children
+    //比较属性
+    if (isDef(data) && isPatchable(vnode)) { 
+      for (i = 0; i < cbs.update.length; ++i) cbs.update[i](oldVnode, vnode)
+      if (isDef(i = data.hook) && isDef(i = i.update)) i(oldVnode, vnode)
+    }
+    // 是否是text
+    if (isUndef(vnode.text)) {
+      // 新旧节点都有children
+      if (isDef(oldCh) && isDef(ch)) {
+        if (oldCh !== ch) updateChildren(elm, oldCh, ch, insertedVnodeQueue, removeOnly)
+      // 新有 老没有 children 循环创建新节点
+      } else if (isDef(ch)) {
+        if (process.env.NODE_ENV !== 'production') {
+          checkDuplicateKeys(ch)
+        }
+        if (isDef(oldVnode.text)) nodeOps.setTextContent(elm, '')
+        addVnodes(elm, null, ch, 0, ch.length - 1, insertedVnodeQueue)
+      // 新没有 老有 children 直接删除老节点
+      } else if (isDef(oldCh)) {
+        removeVnodes(oldCh, 0, oldCh.length - 1)
+      // 新老都没有 children 老的是文本 就置为空
+      } else if (isDef(oldVnode.text)) {
+        nodeOps.setTextContent(elm, '')
+      }
+    // 是text 直接设置文本
+    } else if (oldVnode.text !== vnode.text) {
+      nodeOps.setTextContent(elm, vnode.text)
+    }
+    if (isDef(data)) {
+      if (isDef(i = data.hook) && isDef(i = i.postpatch)) i(oldVnode, vnode)
+    }
+  }
 ```
