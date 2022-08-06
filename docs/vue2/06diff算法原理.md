@@ -44,7 +44,7 @@ export function createPatchFunction (backend) {
 
 ### 前后虚拟节点不一致
 分为三个步骤: 1.创建新的节点、2.更新父占位符节点、3.删除旧节点  
-初次进行挂载组件时会判断如果是真实dom,就会将其转为虚拟节点并替换掉
+初次进行挂载组件时两者不相同,之后会判断如果是真实dom,就会将其转为虚拟节点并替换掉
 ```js
 if (isRealElement) {
   ...
@@ -118,9 +118,6 @@ function patchVnode (oldVnode,vnode,insertedVnodeQueue,ownerArray,index,removeOn
         if (oldCh !== ch) updateChildren(elm, oldCh, ch, insertedVnodeQueue, removeOnly)
       // 新有 老没有 children 循环创建新节点
       } else if (isDef(ch)) {
-        if (process.env.NODE_ENV !== 'production') {
-          checkDuplicateKeys(ch)
-        }
         if (isDef(oldVnode.text)) nodeOps.setTextContent(elm, '')
         addVnodes(elm, null, ch, 0, ch.length - 1, insertedVnodeQueue)
       // 新没有 老有 children 直接删除老节点
@@ -139,3 +136,90 @@ function patchVnode (oldVnode,vnode,insertedVnodeQueue,ownerArray,index,removeOn
     }
   }
 ```
+新旧节点都有children情况的对比
+```js
+// /src/core/vdom/patch.js
+ function updateChildren (parentElm, oldCh, newCh, insertedVnodeQueue, removeOnly) {
+    let oldStartIdx = 0 // 老节点开始索引
+    let newStartIdx = 0 // 新节点开始索引
+    let oldEndIdx = oldCh.length - 1 // 老节点末尾索引
+    let oldStartVnode = oldCh[0] // 老节点开始元素
+    let oldEndVnode = oldCh[oldEndIdx] // 老节点末尾元素
+    let newEndIdx = newCh.length - 1 // 新节点末尾索引
+    let newStartVnode = newCh[0] // 新节点开始元素
+    let newEndVnode = newCh[newEndIdx] // 新节点末尾元素
+    let oldKeyToIdx, idxInOld, vnodeToMove, refElm
+    const canMove = !removeOnly
+    // 满足新节点开始索引小于新节点结束索引,旧节点开始索引小于旧节点结束索引
+    while (oldStartIdx <= oldEndIdx && newStartIdx <= newEndIdx) {
+      if (isUndef(oldStartVnode)) { // 是否定义老节点开始元素
+        oldStartVnode = oldCh[++oldStartIdx]
+      } else if (isUndef(oldEndVnode)) {// 是否定义老节点结束元素
+        oldEndVnode = oldCh[--oldEndIdx]
+        // 头(旧节点开始元素)头(新节点开始元素)对比 例如四个li,末尾新增一个li,这种情况头头对比性能高
+      } else if (sameVnode(oldStartVnode, newStartVnode)) { // sameVnode判断key和tag是否相同
+        patchVnode(oldStartVnode, newStartVnode, insertedVnodeQueue, newCh, newStartIdx)
+        oldStartVnode = oldCh[++oldStartIdx]
+        newStartVnode = newCh[++newStartIdx]
+      } else if (sameVnode(oldEndVnode, newEndVnode)) { // 尾尾对比 例如四个li,头部新增一个li,这种情况尾尾对比性能高
+        patchVnode(oldEndVnode, newEndVnode, insertedVnodeQueue, newCh, newEndIdx)
+        oldEndVnode = oldCh[--oldEndIdx]
+        newEndVnode = newCh[--newEndIdx]
+      } else if (sameVnode(oldStartVnode, newEndVnode)) {// 头尾对比 节点反转优化 reverse
+        patchVnode(oldStartVnode, newEndVnode, insertedVnodeQueue, newCh, newEndIdx)
+        canMove && nodeOps.insertBefore(parentElm, oldStartVnode.elm, nodeOps.nextSibling(oldEndVnode.elm))
+        oldStartVnode = oldCh[++oldStartIdx]
+        newEndVnode = newCh[--newEndIdx]
+      } else if (sameVnode(oldEndVnode, newStartVnode)) { // 尾头对比
+        patchVnode(oldEndVnode, newStartVnode, insertedVnodeQueue, newCh, newStartIdx)
+        canMove && nodeOps.insertBefore(parentElm, oldEndVnode.elm, oldStartVnode.elm)
+        oldEndVnode = oldCh[--oldEndIdx]
+        newStartVnode = newCh[++newStartIdx]
+      } else { // 乱序对比(核心diff,其他方式为优化)
+        if (isUndef(oldKeyToIdx)) oldKeyToIdx = createKeyToOldIdx(oldCh, oldStartIdx, oldEndIdx)
+        idxInOld = isDef(newStartVnode.key)
+          ? oldKeyToIdx[newStartVnode.key]
+          : findIdxInOld(newStartVnode, oldCh, oldStartIdx, oldEndIdx)
+        if (isUndef(idxInOld)) {
+          createElm(newStartVnode, insertedVnodeQueue, parentElm, oldStartVnode.elm, false, newCh, newStartIdx)
+        } else {
+          vnodeToMove = oldCh[idxInOld]
+          if (sameVnode(vnodeToMove, newStartVnode)) {
+            patchVnode(vnodeToMove, newStartVnode, insertedVnodeQueue, newCh, newStartIdx)
+            oldCh[idxInOld] = undefined
+            canMove && nodeOps.insertBefore(parentElm, vnodeToMove.elm, oldStartVnode.elm)
+          } else {
+            createElm(newStartVnode, insertedVnodeQueue, parentElm, oldStartVnode.elm, false, newCh, newStartIdx)
+          }
+        }
+        newStartVnode = newCh[++newStartIdx]
+      }
+    }
+    // 多出来的新节点直接做插入 多出来的旧节点删除
+    if (oldStartIdx > oldEndIdx) {
+      refElm = isUndef(newCh[newEndIdx + 1]) ? null : newCh[newEndIdx + 1].elm
+      addVnodes(parentElm, refElm, newCh, newStartIdx, newEndIdx, insertedVnodeQueue)
+    } else if (newStartIdx > newEndIdx) {
+      removeVnodes(oldCh, oldStartIdx, oldEndIdx)
+    }
+  }
+```
+
+## 注意点
+- key某些情况下不能使用索引,因为改变前后的索引都是一样的,当在头部添加元素时,如果用索引做key就会出现更新错误问题,vue会理解为在末尾添加一个元素(因为前后的key都是0)
+- 在各种对比情况下,只要找到两者相同就会去递归对比children
+- 在乱序对比中,key的作用是极大的。无key会出现更新出错问题,同时达不到复用效果
+- diff对比是**深度优先,同层比较**
+
+## 总结
+在挂载时会经过diff算法后进行模板更新,初次会将真实dom节点和生成的虚拟节点进行对比,并将生成的虚拟节点储存起来,以便之后更新做对比。diff算法只要分两发分支,前后虚拟节点一致和前后虚拟节点不一致。当前后虚拟节点不一致时,会创建新节点、更新父占位符、删除旧节点。如果旧节点是真实节点,就将其转为虚拟节点,拿到旧节点的父节点后替换旧节点。当前后虚拟节点一致时,会先判断新节点是否为文本,如果值则直接添加,如果不是先比较属性,再判断如果新节点有children,旧节点没children,就直接添加新节点children,如果新节点没有,旧节点有,就会将旧节点的children移除,如果新旧节点都有children,利用双指针同层对比,通过头头对比、尾尾对比、头尾对比、尾头对比、乱序对比不断迭代对其进行判断更新,最大程度的利用旧节点,之后如果有多余的新节点就会将其添加,多余的旧节点将其删除,最后将对比后的虚拟节点返回储存起来,作为下次对比的旧节点。
+- 头头对比  
+如果新旧开始元素是相同vnode,递归调用`patchVnode`方法进行深层对比,之后移动索引至下一个元素
+- 尾尾对比  
+如果新旧结束元素是相同vnode,递归调用`patchVnode`方法进行深层对比,之后移动索引至上一个元素
+- 头尾对比  
+将老节点开始元素和旧节点尾元素进行对比,相同就递归调用`patchVnode`方法进行深层对比,之后将旧节点元素移动至最后,旧节点头指针移动到下一个,新节点的尾指针移动至上一个。例如旧:A,B,C,新:C,B,A,第一次对比将旧A移动到C后边
+- 尾头对比  
+将老节点尾元素和旧节点开始元素进行对比,相同就递归调用`patchVnode`方法进行深层对比,之后将旧节点元素移动至最前,旧节点尾指针移动到上一个,新节点的头指针移动至下一个。例如旧:A,B,C,新:C,B,A,D第一次对比将旧C移动到A前边
+- 乱序对比  
+在做比较前会根据key和对应的索引将旧节点生成映射表。在乱序对比时会用当前的key去找旧节点的key,如果能复用,就将节点移动到旧的节点开头处并递归对比children,如果不能复用就创建新的差入到旧的节点开头处。之后将新的索引移至下一个元素
