@@ -6,9 +6,9 @@ class Depend{
     this.reactiveFns = new Set() // 去重
   }
   
-  addDepend(reactiveFn){
-    this.reactiveFns.add(reactiveFn)
-  }
+  // addDepend(reactiveFn){
+  //   this.reactiveFns.add(reactiveFn)
+  // }
 
   depend() {
     if(activeReactiveFn) {
