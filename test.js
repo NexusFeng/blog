@@ -1,71 +1,34 @@
-const tree = [
-  {
-      "label":"节点1",
-      "value":"值1",
-      "level":1,
-      "children":[
-          {
-              "label":"节点1-1",
-              "value":"值1-1",
-              "level":2,
-              "children":[
-                  {
-                      "label":"节点1-1-1",
-                      "value":"1-1-1",
-                      "level":3
-                  },
-                  {
-                      "label":"节点1-1-2",
-                      "value":"1-1-2",
-                      "level":3
-                  }
-              ]
-          }
-      ]
-  },
-  {
-      "label":"节点2",
-      "value":"值2",
-      "level":1,
-      "children":[
-          {
-              "label":"节点2-1",
-              "value":"值2-1",
-              "level":2,
-              "children":[
-                  {
-                      "label":"节点2-1-1",
-                      "value":"2-1-1",
-                      "level":3
-                  }
-              ]
-          }
-      ]
+class lazyMan{
+  name = ''
+  stack = []
+  constructor(name){
+    this.name = name
+    setTimeout(() => {
+      this.next()
+    })
   }
-]
-
-const getAllPath = (tree) => {
-  const paths = [], stack = tree.map(n => ([n, []]));
-  console.log(stack, 'ss')
-  while (stack.length) {
-      const t = stack.pop();
-      console.log(t, 't')
-      t[1].push(t[0]);
-      console.log(t, 't1')
-      if (!t[0].children) {
-          paths.push([...t[1]]);
-          t[1].pop();
-          continue;
-      }
-      t[0].children.forEach(cn => stack.push([cn, t[1]]))
+  next(){
+    const task = this.stack.shift()
+    if(task) task()
   }
-  return paths.map(p => ({
-      "oneId": p[0].value,
-      "oneName": p[0].label,
-      "twoId": p[1].value,
-      "twoName": p[1].label,
-      "treeId": p[2].value,
-      "treeName": p[2].label
-  }));
+  eat(food){
+    const task = () => {
+      console.info(`${this.name}eat${food}`)
+      this.next()
+    }
+    this.stack.push(task)
+    return this
+  }
+  sleep(second) {
+    const task = () => {
+      setTimeout(() => {
+        console.info(`等待${second}秒,执行下一个任务`)
+        this.next()
+      }, second)
+    }
+    this.stack.push(task)
+    return this
+  }
 }
-console.log(getAllPath(tree))
+let me = new lazyMan('nexus')
+me.eat('1').eat('2').sleep(2000).eat('3')
