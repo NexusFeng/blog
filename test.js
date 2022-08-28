@@ -1,20 +1,11 @@
-function newSetInterval(fn, t){
-  let timer = null
-  function interval(){
-    fn()
-    timer = setTimeout(interval, t)
+function myInstanceof(left, right) {
+  if (!right) return false
+  right = right.prototype
+  while(left){
+    if (left === right) return true
+    left = Object.getPrototypeOf(left)
   }
-  interval()
-  return {
-    cancel: () => {
-      clearTimeout(timer)
-    }
-  }
+  return false
 }
-function a() {
-  console.log(1)
-}
-let time = newSetInterval(a, 2000)
-setTimeout(() => {
-  time.cancel()
-}, 10000)
+let arr = [1,2,3]
+console.log(myInstanceof(null, ))

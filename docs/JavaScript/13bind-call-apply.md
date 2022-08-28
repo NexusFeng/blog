@@ -70,6 +70,7 @@ Function.prototype.myBind = fucntion (context, ...args){
     // 此时由于new操作符作用 this指向result实例对象,而result又继承自传入的_this,根据原型链知识可得
     // this.__proto__ === result.prototype => this instanceof result ===true
     // this.__proto__.__proto__ === result.prototype.__proto__ === _this.prototype => this instanceof _this === true
+    // 判断函数是否被new,当使用new时,传入的this会失效
     if (this instanceof _this === true) {
       // 此时this指向result的实例 这时不需要改变this指向
       this[fn] = _this
