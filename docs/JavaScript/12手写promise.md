@@ -211,3 +211,27 @@ promise.then(res => {
 })
 
 ```
+## 取消Promise
+`Promise.race()`方法可以用来竞争Promise,可以借助这个特性,包装一个空的Promise与要发起的Promise来实现
+```js
+function wrap(pro){
+  let obj = {}
+  let p1 = new Promise((resolve, reject) => {
+    obj.resolve = resolve
+    obj.reject = reject
+  })
+  obj.promise = Promise.race([p1,pro])
+  return obj
+}
+// 使用
+let testPro = newPromise((resolve,reject) => {
+  setTimeout(() => {
+    resolve(123)
+  })
+})
+let warpPro = warp(testPro)
+warpPro.promise.then(res => {
+  console.log(res)
+})
+warpPro.resolve('被拦截了')
+```
