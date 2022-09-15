@@ -6,25 +6,25 @@ hero:
     - text: Quick Start
       link: /java-script
 features:
-  - icon: /html.svg
+  - icon: /images/html.svg
     title: html
     desc: 超文本标记语言
-  - icon: /css.svg
+  - icon: /images/css.svg
     title: css
     desc: 层叠样式表
-  - icon: /js.svg
+  - icon: /images/js.svg
     title: JavaScript
     desc: 一种具有函数优先的轻量级，解释型或即时编译型的编程语言
-  - icon: /ts.svg
+  - icon: /images/ts.svg
     title: TypeScript
     desc: JavaScript的一个超集,支持ES6 
-  - icon: /vue.svg
+  - icon: /images/vue.svg
     title: vue
     desc: 渐进式JavaScript 框架
-  - icon: /vite.svg
+  - icon: /images/vite.svg
     title: vite
     desc: 下一代前端开发与构建工具
-  - icon: /webpack.svg
+  - icon: /images/webpack.svg
     title: webpack
     desc: 一个用于现代 JavaScript 应用程序的静态模块打包工具
 footer: It was started in August 2020<br />Powered by [NexusFeng](https://github.com/NexusFeng)

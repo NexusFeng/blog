@@ -6,25 +6,25 @@ hero:
     - text: 快速上手
       link: /getting-started
 features:
-  - icon: /html.svg
+  - icon: images/html.svg
     title: html
     desc: Balabala
-  - icon: /css.svg
+  - icon: images/css.svg
     title: css
     desc: Balabala
-  - icon: /js.svg
+  - icon: images/js.svg
     title: JavaScript
     desc: Balabala
-  - icon: /ts.svg
+  - icon: images/ts.svg
     title: TypeScript
     desc: Balabala
-  - icon: /vue.svg
+  - icon: images/vue.svg
     title: vue
     desc: Balabala
   - icon: /vite.svg
     title: vite
     desc: Balabala
-  - icon: /webpack.svg
+  - icon: images/webpack.svg
     title: webpack
     desc: Balabala
 footer: It was started in August 2020<br />Powered by [NexusFeng](https://github.com/NexusFeng)
