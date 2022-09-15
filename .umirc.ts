@@ -1,10 +1,12 @@
 import { defineConfig } from 'dumi';
-
+const repo = 'blob'
 export default defineConfig({
   title: 'NexusFeng',
   mode: 'site',
   logo: '/images/info.png',
   favicon: '/images/info.png',
+  base: process.env.NODE_ENV === 'production' ? `/${repo}/` : '/',
+  publicPath: process.env.NODE_ENV === 'production' ? `/${repo}/` : '/',
   locales: [['zh-CN', '中文'], ['en-US', 'English']],
   navs: {
     "zh-CN": [

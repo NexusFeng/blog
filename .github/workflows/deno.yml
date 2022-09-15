@@ -1,47 +1,37 @@
-# This workflow uses actions that are not certified by GitHub.
-# They are provided by a third-party and are governed by
-# separate terms of service, privacy policy, and support
-# documentation.
+# 项目名
+name: dumi book test
 
-# This workflow will install Deno and run tests across stable and nightly builds on Windows, Ubuntu and macOS.
-# For more information see: https://github.com/denolib/setup-deno
-
-name: release blog to NexusFeng.github.io
-
+# 只有在master分支发生push事件时触发
 on:
   push:
-    branches: [main]
-  pull_request:
-    branches: [main]
+    branches:
+      - master
 
+# 工作流
 jobs:
-  build:
-    runs-on: ${{ matrix.os }} # runs a test on Ubuntu, Windows and macOS
-
-    strategy:
-      matrix:
-        node: [12]
-        os: [ubuntu-latest]
+  build-and-deploy:
+    runs-on: ubuntu-latest # 运行环境
 
     steps:
-    - uses: actions/checkout@v1
-    - name: Use Node.js 14.x
-      uses: actions/setup-node@v1
-      with:
-        node-version: 14.x
+      # 拉代码
+      - name: Checkout code
+        uses: actions/checkout@v1
 
-    - name: npm install, build
-      run: |
-        npm
-        npm build
-    - name: Deploy
-      uses: JamesIves/github-pages-deploy-action@3.7.1
-      with:
-        ACCESS_TOKEN: ${{ secrets.DEPLOY_KEY }}
-        BRANCH: master
-        FOLDER: dist
-        REPOSITORY_NAME: NexusFeng/NexusFeng.github.io
-        TARGET_FOLDER: blog
+      # 下载node，我这里指定了15.x，这个版本可随意，高于dumi规定的node版本即可
+      - name: Use Node.js
+        uses: actions/setup-node@v1
+        with:
+          node-version: 15.x
 
-      env:
-        CI: true
+      # 打包代码
+      - name: Build Project
+        run: |
+          npm install
+          npm run build
+
+      # 部署到github
+      - name: Deploy to Github
+        uses: JamesIves/github-pages-deploy-action@4.0.0
+        with:
+          branch: build # 打包的内容放到build分支下
+          folder: dist
