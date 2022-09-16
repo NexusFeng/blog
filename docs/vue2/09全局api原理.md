@@ -1,5 +1,5 @@
 ---
-title: 9.全局api原理
+title: 10.全局api原理
 ---
 
 ## Vue.set(vm.$set)/Vue.delete(vm.$delete)

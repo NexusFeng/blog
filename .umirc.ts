@@ -44,14 +44,14 @@ export default defineConfig({
         "path": "/front-end-engineering",
         "title": "工程化"
       },
-      {
-        "title": "Interview▾",
-        "children": [
-          {"title": "原理手写", "path": "/handwritten"},
-          {"title": "问答", "path": "/interview"},
-          // {"title": "小知识点积累", "path": "/every-day-knowledge"}
-        ]
-      },
+      // {
+      //   "title": "Interview▾",
+      //   "children": [
+      //     {"title": "原理手写", "path": "/handwritten"},
+      //     {"title": "问答", "path": "/interview"},
+      //     // {"title": "小知识点积累", "path": "/every-day-knowledge"}
+      //   ]
+      // },
       {
         "title": "GitHub",
         "path": "https://github.com/NexusFeng/blog"
