@@ -207,3 +207,90 @@ setTimeout(() => {
   console.log(signedMessage, store.signedMessage('nexus'))// nexus say new Val
 }, 2000)
 ```
+## 管理actions
+### 添加action
+```ts
+// src/stores/index.ts
+import { defineStore } from 'pinia'
+
+export const useStore = defineStore('main', {
+  state: () => ({
+    message: 'hello',
+  }),
+  actions: {
+    // 异步
+    async updateMessage(newVal: string): Promise<string> {
+      return new Promise(resolve => {
+        setTimeout(() => {
+          // this是当前Store实例
+          this.message = newVal
+          resolve('over')
+        }, 3000)
+      })
+    },
+    // 同步
+    updateMessageSync(newVal: string): string {
+      this.message = newVal
+      return 'over'
+    }
+  }
+})
+```
+### 调用action
+不需要像vuex一样执行commit或者dispatch
+```ts
+import { useStore } from '@/store'
+
+const store = useStore()
+const { message } = storeToRefs(store)
+
+// 立即执行
+store.updateMessageSync('new Val')
+// 异步执行
+store.updateMessage('new Val').then(res => console.log(res))
+```
+### 添加多个Store
+### 目录结构
+```
+src
+  stores
+   index.ts 入口
+   多个 store
+   user.ts
+   game.ts
+   news.ts
+```
+**暴露的方法统一以`use`开头加上文件名,并以`Store`作为结尾,并且每个Store实例的ID必须不同**
+### Store之间的相互引用
+```ts
+// src/stores/message.ts
+import { defineStore } from 'pinia'
+
+// 导入别的store
+import { useUserStore } from './user'
+const userStore = useUserStore()
+export const useMessageStore = defineStore('message', {
+  state: () => ({
+    message: 'hello'
+  }),
+  getters: {
+    greeting: () => `say ${userStore.userName}`
+  }
+})
+```
+## 使用插件
+例: `pinia-plugin-persistedstate`数据持久化插件
+```ts
+// src/main.ts
+import { createApp } from 'vue'
+import App from '@/App.vue'
+import {createPinia} from 'pinia'// 导入pinia
+import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'// 导入pinia插件
+
+const pinia = createPinia()// 初始化pinia
+pinia.use(piniaPluginPersistedstate)// 激活pinia插件
+
+createApp(App)
+.use(pinia) // 启用pinia，这一次包含了插件的pinia实例
+.mount('#app')
+```
