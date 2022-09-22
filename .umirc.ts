@@ -29,7 +29,7 @@ export default defineConfig({
         "title": "构建工具▾",
         "children": [
           {"title": "Webpack", "path": "/webpack"},
-          {"title": "vite", "path": ""}
+          {"title": "vite", "path": "/vite"}
         ]
       },
       {
