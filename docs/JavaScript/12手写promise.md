@@ -126,12 +126,12 @@ class myPromise {
       promises.forEach(promise => {
         results.push({ status: PROMISE_STATUS_FULFILLED, value: res })
         if(results.length === promises.length) {
-          resolve(values)
+          resolve(results)
         }
       }, err => {
         results.push({ status: PROMISE_STATUS_REJECTED, value: err })
         if(results.length === promises.length) {
-          resolve(values)
+          resolve(results)
         }
       })
     })
@@ -154,7 +154,7 @@ class myPromise {
         promise.then(resolve, err => {
           reasons.push(err)
           if(reasons.length === promises.length) {
-            reject(new AggregatError(reasons))
+            reject(new AggregateError(reasons))
           }
         })
       })
