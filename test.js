@@ -1,71 +1,21 @@
-class Lazy {
-  constructor(name) {
-    this.tasks = []
-    this.performTasks = []
-    this.name = name
-    setTimeout(() => {
-      // this.next()
-      this.perform()
-    })
-  }
-
-  perform(){
-    while(this.tasks.length) {
-      this.performTasks.push(this.tasks.pop())
-    }
-    this.next()
-  }
-
-  next() {
-    const task = this.performTasks.pop()
-    if(task) task()
-  }
-
-  addStack() {
-    const task = () => {
-      console.log(`Hi! This is ${this.name}!`)
-      this.next()
-    }
-    this.tasks.push(task)
-    return this
-  }
-
-  eat(food) {
-    const task = () => {
-      console.log(`Eat ${food}`)
-      this.next()
-    }
-    this.tasks.push(task)
-    return this
-  }
-
-  sleep(second) {
-    const task = () => {
-      setTimeout(() => {
-        console.log(`Wake up after ${second}!`)
-        this.next()
-      }, second*1000)
-    }
-    this.tasks.push(task)
-    return this
-  }
-
-  sleepFirst(second) {
-    const task = () => {
-      setTimeout(() => {
-        console.log(`Wake up after ${second}!`)
-        this.next()
-      }, second*1000)
-    }
-    this.tasks.unshift(task)
-    return this
-  }
+Promise.retry = function (promiseFn, times = 3) {
+  let count = 0;
+  const fn = () => {
+    promiseFn()
+      .then((res) => {
+        return res;
+      })
+      .catch((err) => {
+        console.log('1');
+        ++count === times ? console.error('Error:',err) : fn();
+      });
+  };
+  fn();
+};
+function getProm() {
+  const n = Math.random();
+  return new Promise((resolve, reject) => {
+    setTimeout(() => (n > 0.9 ? resolve(n) : reject(n)), 1000);
+  });
 }
-
-function LazyMan(name){
-  let lazyMan = new Lazy(name)
-  lazyMan.addStack()
-  return lazyMan
-}
-
-LazyMan('Hank').eat('dinner').eat('supper')
+Promise.retry(getProm);
