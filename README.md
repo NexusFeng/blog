@@ -1,21 +1,9 @@
-# dumi app
+# NexusFeng's technology blog
 
-## Getting Started
+## Abort
 
-Install dependencies,
+- 👨‍💻‍ 记录自己平时学习的笔记
+- 👐 也记录自己的成长过程
+- 👉越努力，越幸运👈
 
-```bash
-$ npm i
-```
 
-Start the dev server,
-
-```bash
-$ npm start
-```
-
-Build site app,
-
-```bash
-$ npm run build
-```
