@@ -1,21 +1,39 @@
-Promise.retry = function (promiseFn, times = 3) {
-  let count = 0;
-  const fn = () => {
-    promiseFn()
-      .then((res) => {
-        return res;
-      })
-      .catch((err) => {
-        console.log('1');
-        ++count === times ? console.error('Error:',err) : fn();
-      });
-  };
-  fn();
-};
-function getProm() {
-  const n = Math.random();
-  return new Promise((resolve, reject) => {
-    setTimeout(() => (n > 0.9 ? resolve(n) : reject(n)), 1000);
-  });
+const tree = [
+  {
+    name:'1',
+    children:[{
+      name: '1-1',
+      children: []
+    },
+    {
+      name: '1-2',
+      children: []
+    },
+    {name:'2',
+    children:[{
+      name: '2-1',
+      children: []
+    },
+    {
+      name: '2-2',
+      children: []
+    }
+  ]}]
+  }
+]
+const getAllPath = (tree) => {
+  const paths = []
+  for(let i = 0; i < tree.length; i++) {
+    if(tree[i].children && tree[i].children.length) {
+      const res = getAllPath(tree[i].children)
+      for(let j = 0; j < res.length; j++) {
+        paths.push([tree[i], ...res])
+      }
+    } else {
+      paths.push([tree[i]])
+    }
+  }
+  return paths
 }
-Promise.retry(getProm);
+
+console.log(getAllPath(tree))
