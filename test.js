@@ -1,39 +1,40 @@
-const tree = [
-  {
-    name:'1',
-    children:[{
-      name: '1-1',
-      children: []
-    },
-    {
-      name: '1-2',
-      children: []
-    },
-    {name:'2',
-    children:[{
-      name: '2-1',
-      children: []
-    },
-    {
-      name: '2-2',
-      children: []
+// 题目需求
+let middleware = []
+middleware.push((next) => {
+  console.log(1)
+  next()
+  console.log(1.1)
+})
+middleware.push((next) => {
+  console.log(2)
+  next()
+  console.log(2.1)
+})
+middleware.push((next) => {
+  console.log(3)
+  next()
+  console.log(3.1)
+})
+let fn = compose(middleware)
+fn()
+/*
+1
+2
+3
+3.1
+2.1
+1.1
+*/
+//实现compose函数
+  function compose(middlewares) {
+    if(!Array.isArray(middlewares)) throw new TypeError('middleware must be an array!')
+    for (const fn of middleware) {
+      if (typeof fn !== 'function') throw new TypeError(`${fn.name} must be a function!`)
     }
-  ]}]
-  }
-]
-const getAllPath = (tree) => {
-  const paths = []
-  for(let i = 0; i < tree.length; i++) {
-    if(tree[i].children && tree[i].children.length) {
-      const res = getAllPath(tree[i].children)
-      for(let j = 0; j < res.length; j++) {
-        paths.push([tree[i], ...res])
+    middlewares.reverse()
+    return middlewares.reduce((pre,cur)=>{
+      return ()=>{
+        return cur(pre)
       }
-    } else {
-      paths.push([tree[i]])
-    }
+    }, ()=> {})
   }
-  return paths
-}
-
-console.log(getAllPath(tree))
