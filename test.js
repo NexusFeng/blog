@@ -1,40 +1,24 @@
-// 题目需求
-let middleware = []
-middleware.push((next) => {
-  console.log(1)
-  next()
-  console.log(1.1)
-})
-middleware.push((next) => {
-  console.log(2)
-  next()
-  console.log(2.1)
-})
-middleware.push((next) => {
-  console.log(3)
-  next()
-  console.log(3.1)
-})
-let fn = compose(middleware)
-fn()
-/*
-1
-2
-3
-3.1
-2.1
-1.1
-*/
-//实现compose函数
-  function compose(middlewares) {
-    if(!Array.isArray(middlewares)) throw new TypeError('middleware must be an array!')
-    for (const fn of middleware) {
-      if (typeof fn !== 'function') throw new TypeError(`${fn.name} must be a function!`)
-    }
-    middlewares.reverse()
-    return middlewares.reduce((pre,cur)=>{
-      return ()=>{
-        return cur(pre)
-      }
-    }, ()=> {})
+Array.prototype._reduce = function(fn, base){
+  if(typeof fn !== 'function') throw new Error('参数必须是函数')
+  if(!Array.isArray(this)) throw new Error('只有数组才能使用reduce方法') 
+  let arr = this
+  if(base){
+    i = 0
+  } else {
+    base = arr[0]
+    i = 1
   }
+  for(i; i < arr.length; i++) {
+    base = fn(base, arr[i], i, arr)
+  }
+  return base
+}
+const array1 = [2, 3, 4]
+const map1 = array1._reduce((pre, cur) => {
+  return pre + cur
+})
+console.log(map1)
+// expected output: "a"
+// expected output: "b"
+// expected output: "c"
+
