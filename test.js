@@ -1,24 +1,43 @@
-Array.prototype._reduce = function(fn, base){
-  if(typeof fn !== 'function') throw new Error('参数必须是函数')
-  if(!Array.isArray(this)) throw new Error('只有数组才能使用reduce方法') 
-  let arr = this
-  if(base){
-    i = 0
-  } else {
-    base = arr[0]
-    i = 1
+class Add1 {
+  constructor(){
+    this.tasks = []
   }
-  for(i; i < arr.length; i++) {
-    base = fn(base, arr[i], i, arr)
+  add(){
+    this.tasks.push(1)
   }
-  return base
+  del() {
+    this.tasks.shift()
+  }
 }
-const array1 = [2, 3, 4]
-const map1 = array1._reduce((pre, cur) => {
-  return pre + cur
-})
-console.log(map1)
-// expected output: "a"
-// expected output: "b"
-// expected output: "c"
+class Add2 {
+  constructor(){
+    this.tasks = []
+    this.perTask = []
+  }
+  add(){
+    this.tasks.push(1)
+  }
+  del() {
+    while(this.tasks.length) {
+      this.perTask.push(this.tasks.pop())
+    }
+    this.perTask.pop()
+  }
+}
 
+console.time('add1')
+let add1 = new Add1()
+for(let i = 0; i < 10000; i ++) {
+  add1.add()
+}
+add1.del()
+console.timeEnd('add1')
+
+
+console.time('add2')
+let add2 = new Add2()
+for(let i = 0; i < 10000; i ++) {
+  add2.add()
+}
+add2.del()
+console.timeEnd('add2')
