@@ -1,14 +1,14 @@
 
-const arr = [1,[2,[3]]]
-function flatten1(arr) {
-  const res = []
-  const _falt = arr => {
-    arr.forEach(item => {
-      Array.isArray(item) ? _falt(item) : res.push(item)
-    })
-  }
-  _falt(arr)
-  return res
+const F = function () {}
+Object.prototype.a = function () {
+  console.log('a')
 }
-console.log(flatten1(arr))
 
+Function.prototype.b = function () {
+  console.log('b')
+}
+
+const f = new F()
+
+f.a() // a
+f.b() // b
