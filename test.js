@@ -1,128 +1,136 @@
-class EventEmitter {
-  constructor(){
-    this.events = {}
+Array.prototype._forEach = function(fn, thisArg){
+  if(typeof fn !== 'function') throw new Error('参数必须是函数')
+  if(!Array.isArray(this)) throw new Error('。。。')
+  let arr = this
+  if(!arr.length) return
+  for(let i = 0; i < arr.length; i++) {
+    fn.call(thisArg, arr[i], i, arr)
   }
-
-  on(type, cb){
-    if(!this.events) this.events = Object.create(null)
-    if(!this.events[type]) {
-      this.events[type] = [cb]
-    } else {
-      this.events[type].push(cb)
-    }
-  }
-
-  off(type, cb) {
-    if(!this.events[type]) return
-    if(cb) {
-      this.events[type] = this.events[type].filter(item => {
-        item != cb
-      })
-    } else {
-      delete this.events[type]
-    }
-  }
-
-  emit(type, ...args) {
-    this.events[type] && this.events[type].forEach(cb => {
-      if(cb) {
-        cb.apply(this, args)
-        cb.isOnce && this.off(type, cb)
-      }
-    })
-  }
-
-  once(type, cb) {
-    cb.isOnce = true
-    this.on(type, cb)
-  }
-
 }
 
-function parseQueryParams(url){
-  return url.split('?')[1].split('&').reduce((target, cur) => {
-    const [key, val] = cur.split('=')
-    target[key] = val
-    return target
-  }, {})
+Array.prototype._map = function(fn, thisArg){
+  let arr = this
+  let res = []
+  if(!arr.length) return
+  for(let i = 0; i < arr.length; i++) {
+    let tmp = fn.call(thisArg, arr[i], i, arr)
+    res.push(tmp)
+  }
 }
 
+Array.prototype._filter = function(fn, thisArg){
+  let arr = this
+  let res = []
+  if(!arr.length) return
+  for(let i = 0; i < arr.length; i++) {
+    let tmp = fn.call(thisArg, arr[i], i, arr)
+    if(tmp)res.push(tmp)
+  }
+}
 
-const observer = new IntersectionObserver((entires, self) => {
-  entires.forEach(entry => {
-    if(entry.isIntersecting) {
-      const {target} = entry
-      const src = target.dataset.src
-      target.src = src
-      target.removeAttribute('data-src')
-      self.unobserve(target)
+Array.prototype._some = function(fn, thisArg){
+  let arr = this
+  let res = []
+  if(!arr.length) return
+  for(let i = 0; i < arr.length; i++) {
+    let tmp = fn.call(thisArg, arr[i], i, arr)
+    if(tmp)return true
+  }
+  return false
+}
+
+Array.prototype._reduce = function(fn, base){
+  let arr = this, i
+  if(!arr.length) return
+  if(base) {
+    i = 0
+  } else {
+    base = arr[0]
+    i = 1
+  }
+  for(i; i < arr.length; i++) {
+    base = fn(base, arr[i], i, arr)
+  }
+  return base
+}
+
+function compose(middleWares) {
+  middleWares.reverse()
+  return middleWares.reduce((pre,cur) => {
+    return () => {
+      return cur(pre)
+    }
+  }, () => {})
+}
+
+function compose2(middleWares) {
+  function dispatch(index) {
+    if(index === middleWares.length) return Promise.resolve()
+
+    const cb = middleWares[index]
+
+    return Promise.resolve(cb(() => dispatch(++index)))
+  }
+
+  dispatch(0)
+}
+const arr = [
+  {
+    id: 2,
+    name: '部门B',
+    parentId: 0,
+  },
+  {
+    id: 3,
+    name: '部门C',
+    parentId: 1,
+  },
+  {
+    id: 1,
+    name: '部门A',
+    parentId: 2,
+  },
+  {
+    id: 4,
+    name: '部门D',
+    parentId: 1,
+  },
+  {
+    id: 5,
+    name: '部门E',
+    parentId: 2,
+  },
+  {
+    id: 6,
+    name: '部门F',
+    parentId: 3,
+  },
+  {
+    id: 7,
+    name: '部门G',
+    parentId: 2,
+  },
+  {
+    id: 8,
+    name: '部门H',
+    parentId: 4,
+  },
+]
+function array2tree(arr) {
+  let res = []
+  let map = {}
+  if(!Array.isArray(arr)) return res
+  arr.forEach(item => {
+    map[item.id] = item
+  })
+  arr.forEach(item => {
+    let parent = map[item.parentId]
+    if(parent) {
+      (parent.children || (parent.children=[])).push(item)
+    } else {
+      res.push(item)
     }
   })
-})
-
-imgs.forEach(img => {
-  observer.observe(img)
-})
-
-
-
-class myPromise {
-  static all(promises) {
-    return new Promise((resolve, reject) => {
-      let count = 0
-      const result = []
-      for(let i = 0; i < promises.length; i++) {
-        const cur = promises[i]
-        Promise.resolve(item).then(res => {
-          result[i] = res
-          count++
-          if(count === promises.length)
-            resolve(result)
-        }).catch(err => {
-          reject(err)
-        })
-      }
-    })
-  }
-
-  static allSettled(promises){
-    let count = 0
-    let len = promises.length
-    let result = []
-    return new Promise((resolve, reject) => {
-      if(!Array.isArray(promises)) {
-        return reject(new Error('必须传入数组类型'));
-      }
-      promises.forEach((promise, idx) => {
-        promise.then(res => {
-          result[idx] = {
-            status: 'fulfilled',
-            value: res
-          }
-          count++
-          if(count === len) resolve(result)
-        }).catch(err => {
-          result[idx] = {
-            reason: err,
-            status: 'rejected'
-          }
-          count++
-          if(count === len) resolve(result)
-        })
-      })
-    })
-  }
-
-  static any(promises) {
-    return new Promise((resolve, reject) => {
-      promises.then(resolve, reject)
-    })
-  }
-
-  static race(promises) {
-    const res = []
-    return new Promise((resolve, reject) => {
-      
-    })
-  }
+  return res
 }
+console.log(array2tree(arr))
