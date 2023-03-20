@@ -58,9 +58,7 @@ console.log(axiosPoint instanceof YPoint) //true
 
 ```js
 Function.prototype.myBind = fucntion (context, ...args){
-  if(!context || context === null) {
-    context = window
-  }
+  context = (context !== undefined && context !== null) ? context : window
   // 创建唯一key值,作为构造的context内部方法
   let fn = Symbol()
   context[fn] = this
@@ -71,7 +69,7 @@ Function.prototype.myBind = fucntion (context, ...args){
     // this.__proto__ === result.prototype => this instanceof result ===true
     // this.__proto__.__proto__ === result.prototype.__proto__ === _this.prototype => this instanceof _this === true
     // 判断函数是否被new,当使用new时,传入的this会失效
-    if (this instanceof _this === true) {
+    if (this instanceof _this) {
       // 此时this指向result的实例 这时不需要改变this指向
       this[fn] = _this
       this[fn](...[...args, ...innerArgs])
@@ -88,21 +86,21 @@ Function.prototype.myBind = fucntion (context, ...args){
 ```
 第三版
 ```js
-Function.prototype.myBind = function(thisArg, ...argArray) {
-  var fn = this
-  thisArg = (thisArg !== null && thisArg !== undefined) ? Object(thisArg) : window
-
-  function proxyFn(...args){
-    thisArg.fn = fn
-    let result = thisArg.fn()
-
-    let finalArg = [...argArray, ..args]
-    delete thisArg.fn(...finalArg)
-    delete thisArg.fn
-    return result
+Function.prototype._bind = function (context,...outsideArgs) {
+  context = (context !== undefined && context !== null) ? context : window
+  let fn = Symbol()
+  context[fn] = this
+  let outsideThis = this
+  const res = function(...innerArgs) {
+    let innerThis = this
+    if(innerThis instanceof outsideThis) {
+      innerThis[fn] = outsideThis
+      return innerArgs[fn](...[...innerArgs, ...outsideArgs])
+    }
+    return context[fn](...[...innerArgs, ...outsideArgs])
   }
-
-  return proxyFn
+  if(res.prototype) res.prototype = Object.create(this.prototype)
+  return res
 }
 ```
 
@@ -138,9 +136,7 @@ Function.prototype.myCall = function(context) {
 
 ```js
 Function.prototype.myCall = function(context, ...args) {
-  if (!context || context === null) {
-    context = window
-  }
+  context = (context !== null && context !== undefined) ? Object(context) : window
   // 创建唯一key值 作为构造的context内部方法
   let fn = Symbol()
   context[fn] = this // this指向调用call的函数
@@ -206,6 +202,31 @@ Function.prototype.myApply = function(thisArg, argArray){
  delete thisArg.fn
  return result 
 }
+```
+第三版(**apply的第二个参数可以是数组或者类数组**)
+```js
+Function.prototype._apply = function(context, args) {
+  context = (context !== null && context !== undefined) ? Object(context) : window
+  const fn = Symbol()
+  context[fn] = this
+  if(args.length) {
+    if(!Array.isArray(args)) args = Array.from(args)
+  } else {
+    throw new Error('error')
+  }
+  let res = context[fn](...args)
+  return res
+}
+// 使用
+var obj = {
+  a: 1, b: 2
+}
+function add(c, d) {
+  return this.a+this.b + c + d
+}
+
+console.log(add._apply(obj,{'0': 1, '1': 2, 'length':2}))
+console.log(add._apply(obj,[1,2]))
 ```
 
 ## 类数组传数组`Array.prototype.slice.call()`
