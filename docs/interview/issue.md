@@ -247,3 +247,34 @@ action：执行业务代码,方便复用,逻辑可以为异步,不能直接修�
 ## Options API的弊端
 - 对应的属性编写对应的功能模块,这种弊端在实现某一个功能时,这个功能**对应的代码逻辑**会被**拆分到各个属性**中
 - 当组件更大更复杂时,逻辑关注点的列表就会增长,**同一个功能的逻辑就会被拆的很分散**
+
+## 事件模型
+- DOM0级: 事件处理程序直接作为元素的属性来指定
+```html
+<button onclick="alert('Hello, world!')">Click me!</button>
+```
+- DOM1级: 事件处理程序是通过元素的属性来指定，但是属性的名称使用on前缀和事件名称组合而成.将onclick属性设置为一个JavaScript函数，从而指定单击事件处理程
+```html
+<button id="myButton">Click me!</button>
+
+<script>
+var btn = document.getElementById("myButton");
+btn.onclick = function() {
+    alert("Hello, world!");
+};
+</script>
+```
+- DOM2级: 使用addEventListener()方法向元素添加事件处理程序
+```html
+<button id="myButton">Click me!</button>
+
+<script>
+var btn = document.getElementById("myButton");
+btn.addEventListener("click", function() {
+    alert("Hello, world!");
+}, false);
+</script>
+```
+- DOM3级
+DOM3级在DOM2级的基础上增加了更多的事件类型和事件处理程序，并对事件模型进行了扩展和优化，包括键盘事件、鼠标滚轮事件、变动事件等，虽然DOM3级事件模型是一个标准规范，但是并不是所有浏览器都完全支持该规范
+
