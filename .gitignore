@@ -13,10 +13,6 @@
 # misc
 .DS_Store
 
-# umi
-.umi
-.umi-production
-.env.local
 
 # ide
 /.vscode
