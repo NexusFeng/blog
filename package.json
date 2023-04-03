@@ -21,9 +21,11 @@
     ]
   },
   "devDependencies": {
-    "dumi": "^1.0.13",
     "lint-staged": "^10.0.7",
     "prettier": "^2.2.1",
     "yorkie": "^2.0.0"
+  },
+  "dependencies": {
+    "hexo": "^7.0.0-rc1"
   }
 }
