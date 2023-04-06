@@ -3,11 +3,11 @@
 ## Source: https://github.com/hexojs/hexo/
 
 # Site
-title: NexusFeng-blog
-subtitle: ''
-description: ''
+title: ''
+subtitle: '🏝A ship in harbor is safe, but that is not what ships are built for.'
+description: '一个萌新的学习笔记🖥'
 keywords:
-author: John Doe
+author: NexusFeng
 language: zh-CN
 timezone: ''
 
@@ -44,7 +44,7 @@ post_asset_folder: false
 relative_link: false
 future: true
 highlight:
-  enable: true
+  enable: false
   line_number: true
   auto_detect: false
   tab_replace: ''
@@ -97,9 +97,47 @@ ignore:
 # Extensions
 ## Plugins: https://hexo.io/plugins/
 ## Themes: https://hexo.io/themes/
-theme: fluid
+theme: shokaX
 
 # Deployment
 ## Docs: https://hexo.io/docs/one-command-deployment
 deploy:
   type: ''
+
+markdown:
+  render: # 渲染器设置
+    html: false # 过滤 HTML 标签
+    xhtmlOut: true # 使用 '/' 来闭合单标签 （比如 <br />）。
+    breaks: true # 转换段落里的 '\n' 到 <br>。
+    linkify: true # 将类似 URL 的文本自动转换为链接。
+    typographer: 
+    quotes: '“”‘’'
+  plugins: # markdown-it 插件设置
+    - plugin:
+        name: markdown-it-toc-and-anchor
+        enable: true
+        options: # 文章目录以及锚点应用的 class 名称，shoka 系主题必须设置成这样
+          tocClassName: 'toc'
+          anchorClassName: 'anchor'
+    - plugin:
+        name: markdown-it-multimd-table
+        enable: true
+        options:
+          multiline: true
+          rowspan: true
+          headerless: true
+    - plugin:
+        name: ./markdown-it-furigana
+        enable: true
+        options:
+          fallbackParens: "()"
+    - plugin:
+        name: ./markdown-it-spoiler
+        enable: true
+        options:
+          title: "你知道得太多了"
+
+autoprefixer:
+  exclude:
+    - '*.min.css'
+
