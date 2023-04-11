@@ -1,6 +1,6 @@
 ---
 title: 关于bind/call/apply
-date: 2022-02-12
+date: 2021-09-18
 categories: 
   - JavaScript
 tags: 

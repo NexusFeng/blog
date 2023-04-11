@@ -119,7 +119,7 @@ menu:
     archives: /archives/ || list-alt
     categories: /categories/ || th
     tags: /tags/ || tags
-  about: /about/ || user
+  # about: /about/ || user
   
   # statistics: /statistics/ || clock
   # friends: /friends/ || heart

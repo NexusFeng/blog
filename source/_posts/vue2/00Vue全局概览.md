@@ -1,6 +1,6 @@
 ---
 title: Vue全局概览
-date: 2022-02-12
+date: 2022-07-30
 categories: 
   - Vue2
 tags: 

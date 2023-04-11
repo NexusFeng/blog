@@ -1,5 +1,6 @@
 ---
 title: 全局api原理
+date: 2022-08-12
 categories: 
   - Vue2
 tags: 

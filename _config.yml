@@ -69,6 +69,7 @@ index_generator:
 # Category & Tag
 default_category: uncategorized
 category_map:
+  数据结构与算法: algorithm
 tag_map:
 
 # Metadata elements
@@ -141,4 +142,3 @@ markdown:
 autoprefixer:
   exclude:
     - '*.min.css'
-

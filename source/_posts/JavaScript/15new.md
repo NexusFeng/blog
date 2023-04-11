@@ -1,6 +1,6 @@
 ---
 title: new的实现原理
-date: 2022-02-12
+date: 2021-09-19
 categories: 
   - JavaScript
 tags: 

@@ -1,5 +1,6 @@
 ---
 title: Pinia
+date: 2021-04-13
 categories: 
   - Vue3
 tags: 

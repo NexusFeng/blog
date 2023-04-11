@@ -1,6 +1,6 @@
 ---
 title: Promise
-date: 2022-02-12
+date: 2021-09-17
 categories: 
   - JavaScript
 tags: 
